@@ -36,6 +36,8 @@ public class OnKeyPressedHookHandler
     {
         KeyPressed?.Invoke(this, e);
 
+        if (!_settings.IsSoundEnabled) return;
+        
         Console.WriteLine($"Нажата клавиша: {e.Data.KeyCode}");
         
         var binding = _settings.KeyBindings.FirstOrDefault(kb => kb.Key == e.Data.KeyCode);
