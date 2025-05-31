@@ -7,6 +7,8 @@ namespace Soundomatic.Models;
 /// </summary>
 public class Sound
 {
+    // todo: переписать под группы и вынести в бд, работу с файлами музыки вынести в FileStorage методы
+    
     /// <summary>
     /// Название звука
     /// </summary>

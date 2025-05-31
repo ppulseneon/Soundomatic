@@ -3,11 +3,12 @@ using System.IO;
 using System.Threading.Tasks;
 using NAudio.Wave;
 using Soundomatic.Models;
+using Soundomatic.Models.Settings;
 using Soundomatic.Services.Interfaces;
 
 namespace Soundomatic.Services;
 
-public class SoundPlayer(GlobalSettings settings) : ISoundPlayer
+public class SoundPlayer(AppSettings settings) : ISoundPlayer
 {
     private WaveOutEvent _waveOut;
     
@@ -30,6 +31,8 @@ public class SoundPlayer(GlobalSettings settings) : ISoundPlayer
         {
             try
             {
+                // todo: учесть реализацию собственной громкости песни в её параметрах
+                
                 _waveOut = new WaveOutEvent();
                 using var audioFile = new AudioFileReader(sound.FilePath);
                 
