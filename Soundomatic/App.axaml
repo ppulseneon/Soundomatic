@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:Soundomatic.Converters"
              x:Class="Soundomatic.App"
              xmlns:local="using:Soundomatic"
              RequestedThemeVariant="Default">
@@ -12,4 +13,11 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+            <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

@@ -28,9 +28,14 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
         <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="SharpHook" Version="6.1.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Storage\Migrations\" />
+        <Folder Include="Storage\Migrations\" />
     </ItemGroup>
 </Project>

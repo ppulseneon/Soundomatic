@@ -1,19 +1,29 @@
-﻿using SharpHook.Data;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using SharpHook.Data;
+using Soundomatic.Models.Base;
 
 namespace Soundomatic.Models;
 
 /// <summary>
 /// Биндинг файла к звуку
 /// </summary>
-public class KeyBinding
+public class KeyBinding: BaseEntity
 {
     /// <summary>
     /// Код назначенной клавиши
     /// </summary>
-    public required KeyCode Key { get; set; }
+    [Required]
+    public KeyCode Key { get; set; }
 
     /// <summary>
-    /// Звук, проигрываемый при нажатии
+    /// Связанная группа звуков
     /// </summary>
-    public required Sound Sound { get; set; }
+    [Required]
+    public SoundPack Pack { get; set; } = null!;
+    
+    /// <summary>
+    /// ID связанной группы звуков
+    /// </summary>
+    public long PackId { get; set; }
 }

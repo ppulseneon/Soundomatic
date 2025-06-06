@@ -3,39 +3,48 @@ using System.IO;
 using System.Threading.Tasks;
 using NAudio.Wave;
 using Soundomatic.Models;
-using Soundomatic.Models.Settings;
 using Soundomatic.Services.Interfaces;
+using Soundomatic.Settings;
 
 namespace Soundomatic.Services;
 
-public class SoundPlayer(AppSettings settings) : ISoundPlayer
+/// <summary>
+/// Плеер для воспроизведения звуков
+/// </summary>
+public class SoundPlayer : ISoundPlayer
 {
+    private readonly AppSettings _settings;
+    private readonly ISoundFileService _fileService;
     private WaveOutEvent _waveOut;
     
+    public SoundPlayer(AppSettings settings, ISoundFileService fileService)
+    {
+        _settings = settings;
+        _fileService = fileService;
+    }
+    
+    /// <summary>
+    /// Воспроизвести указанный звук
+    /// </summary>
+    /// <param name="sound">Звук для воспроизведения</param>
+    /// <exception cref="FileNotFoundException">Ошибка, если файл недоступен</exception>
     public async Task PlaySoundAsync(Sound sound)
     {
-        if (string.IsNullOrEmpty(sound.FilePath))
+        var filePath = _fileService.GetSoundFilePath(sound);
+        
+        if (!File.Exists(filePath))
         {
-            throw new ArgumentException("Путь к файлу звука не может быть пустым", nameof(sound.FilePath));
+            throw new FileNotFoundException($"Файл звука не найден: {filePath}");
         }
 
-        if (!File.Exists(sound.FilePath))
-        {
-            Console.WriteLine($"Файл звука не найден: {sound.FilePath}");
-            return;
-        }
-
-        var volume = settings.Volume / 100.0f;
+        var volume = _settings.Volume * sound.Volume / 100.0f;
         
         await Task.Run(() =>
         {
             try
             {
-                // todo: учесть реализацию собственной громкости песни в её параметрах
-                
                 _waveOut = new WaveOutEvent();
-                using var audioFile = new AudioFileReader(sound.FilePath);
-                
+                using var audioFile = new AudioFileReader(filePath);
                 audioFile.Volume = volume;
                 
                 _waveOut.Init(audioFile);

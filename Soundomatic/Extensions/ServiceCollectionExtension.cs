@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Soundomatic.Models.Settings;
+using Soundomatic.Services;
+using Soundomatic.Services.Interfaces;
+using Soundomatic.Settings;
+using Soundomatic.Storage;
 using Soundomatic.Storage.Context;
 using Soundomatic.ViewModels;
 
@@ -19,7 +22,9 @@ public static class ServiceCollectionExtension
     {
         return services
             .AddViewModels()
-            .AddStorageServices();
+            .AddAppSettings()
+            .AddStorageServices()
+            .AddApplicationServices();
     }
     
     /// <summary>
@@ -34,14 +39,39 @@ public static class ServiceCollectionExtension
     }
 
     /// <summary>
+    /// Метод для регистрации AppSettings в DI
+    /// </summary>
+    /// <param name="services">Абстрактная коллекция зависимостей</param>
+    private static IServiceCollection AddAppSettings(this IServiceCollection services)
+    {
+        var fileStorage = new FileSettingsStorage();
+        return services.AddSingleton(fileStorage.Load());
+    }
+    
+    /// <summary>
     /// Метод для регистрации сервисов хранилища
     /// </summary>
     /// <param name="services">Абстрактная коллекция зависимостей</param>
     private static IServiceCollection AddStorageServices(this IServiceCollection services)
     {
         var settings = new DbSettings();
-        
+
         return services
-            .AddDbContextFactory<ApplicationDbContext>(builder => builder.UseSqlite(settings.ConnectionString));
+            .AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(settings.ConnectionString));
+    }
+    
+    /// <summary>
+    /// Метод для регистрации сервисов приложения
+    /// </summary>
+    /// <param name="services">Абстрактная коллекция зависимостей</param>
+    private static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<ISoundStorageService, SoundStorageService>()
+            .AddScoped<IKeyBindingService, KeyBindingService>()
+            .AddScoped<ISoundFileService, SoundFileService>()
+            .AddScoped<ISoundPlayer, SoundPlayer>()
+            .AddScoped<IPlaybackService, PlaybackService>();
     }
 }

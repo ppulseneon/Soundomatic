@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using Soundomatic.Models.Settings;
+using Soundomatic.Settings;
 
-namespace Soundomatic.Storage.FileStorage;
+namespace Soundomatic.Storage;
 
 /// <summary>
 /// Класс для работы с настройками приложения в XML файле
 /// </summary>
 public class FileSettingsStorage
 {
-    private const string DefaultSettingsFileName = "settings.xml";
+    private const string DefaultSettingsFileName = "AppSettings.xml";
     private readonly string _settingsPath;
 
     /// <summary>
@@ -36,7 +36,6 @@ public class FileSettingsStorage
     /// <summary>
     /// Загружает настройки из XML файла. Если файл не существует, создает новый с настройками по умолчанию
     /// </summary>
-    /// <returns>Загруженные настройки или настройки по умолчанию в случае ошибки</returns>
     public AppSettings Load()
     {
         if (!File.Exists(_settingsPath))

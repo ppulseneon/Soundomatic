@@ -1,28 +1,25 @@
-﻿using Soundomatic.Models.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Soundomatic.Models.Base;
+using Soundomatic.Models.Enums;
 
 namespace Soundomatic.Models;
 
 /// <summary>
 /// Объект звука
 /// </summary>
-public class Sound
+public class Sound: BaseEntity
 {
-    // todo: переписать под группы и вынести в бд, работу с файлами музыки вынести в FileStorage методы
-    
     /// <summary>
     /// Название звука
     /// </summary>
+    [Required, MaxLength(128)]
     public required string Name { get; set; }
 
     /// <summary>
     /// Название звукового файла
     /// </summary>
+    [Required, MaxLength(128)]
     public required string FileName { get; init; }
-    
-    /// <summary>
-    /// Путь к звуковому файлу
-    /// </summary>
-    public required string FilePath { get; init; }
     
     /// <summary>
     /// Формат звукового файла 
@@ -30,17 +27,27 @@ public class Sound
     public AudioFormat AudioFormat { get; init; }
 
     /// <summary>
-    /// Путь к иконке, связанной с этим звуковым файлом
-    /// </summary>
-    public string? IconPath { get; set; }
-
-    /// <summary>
-    /// Флаг, указывающий, является ли этот звуковой файл стандартным
-    /// </summary>
-    public bool IsDefault { get; init; }
-
-    /// <summary>
     /// Размер файла в байтах
     /// </summary>
-    public long FileSizeBytes { get; init; }
+    public required long FileSizeBytes { get; set; }
+    
+    /// <summary>
+    /// Громкость звука (от 0 до 100)
+    /// </summary>
+    public int Volume { get; set; }
+
+    /// <summary>
+    /// Группа, к которой принадлежит звук
+    /// </summary>
+    public SoundPack SoundPack { get; set; } = null!;
+    
+    /// <summary>
+    /// ID группы, к которой принадлежит звук
+    /// </summary>
+    public long SoundPackId { get; set; }
+
+    /// <summary>
+    /// Путь к звуковому файлу
+    /// </summary>
+    public required string FilePath { get; set; }
 }

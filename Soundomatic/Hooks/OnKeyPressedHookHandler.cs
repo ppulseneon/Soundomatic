@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SharpHook;
-using Soundomatic.Models.Settings;
+using Soundomatic.Models;
 using Soundomatic.Services.Interfaces;
+using Soundomatic.Settings;
 
 namespace Soundomatic.Hooks;
 
-public class OnKeyPressedHookHandler
+/// <summary>
+/// Глобальный обработчик нажатия клавиши клавиатуры
+/// </summary>
+public class OnKeyPressedHookHandler : IDisposable
 {
     public event EventHandler<KeyboardHookEventArgs> KeyPressed;
     private readonly ISoundPlayer _soundPlayer;
@@ -31,26 +36,34 @@ public class OnKeyPressedHookHandler
         _hook.Stop();
     }
 
+    /// <summary>
+    /// Обработчик события нажатия клавиши клавиатуры
+    /// </summary>
     private async void OnKeyPressed(object sender, KeyboardHookEventArgs e)
     {
-        // todo: переписать реализацию под отдельные треки и группы с псевдо-рандомизацией и порядком 
+        if (!_settings.IsSoundEnabled) return;
         
-        // KeyPressed?.Invoke(this, e);
-        //
-        // if (!_settings.IsSoundEnabled) return;
-        //
-        // Console.WriteLine($"Нажата клавиша: {e.Data.KeyCode}");
-        //
         // var binding = _settings.KeyBindings.FirstOrDefault(kb => kb.Key == e.Data.KeyCode);
-        // if (binding == null) return;
         //
-        // await _soundPlayer.PlaySoundAsync(binding.Sound);
-        // Console.WriteLine($"Нажата клавиша: {e.Data.KeyCode}, воспроизводится звук: {binding.Sound.Name}");
+        // var soundToPlay = binding?.Pack.GetNextSoundToPlay();
+        //
+        // if (soundToPlay == null) return;
+        //
+        // try
+        // {
+        //     await _soundPlayer.PlaySoundAsync(soundToPlay);
+        //     Console.WriteLine($"Key Pressed: {e.Data.KeyCode}, Playing sound: {soundToPlay.Name} from pack: {binding.Pack.Name}. Strategy: {binding.Pack.StrategyType}");
+        // }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Error playing sound {soundToPlay.Name}: {ex.Message}");
+        // }
     }
 
     public void Dispose()
     {
         Stop();
         _hook.KeyPressed -= OnKeyPressed;
+        _hook.Dispose();
     }
 }
