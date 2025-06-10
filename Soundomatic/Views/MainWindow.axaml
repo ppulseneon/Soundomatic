@@ -15,6 +15,30 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid RowDefinitions="Auto,*" Margin="10">
+        <TextBlock Text="Звуковые пакеты" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,10"/>
+        
+        <ListBox Grid.Row="1" 
+                 ItemsSource="{Binding SoundPacks}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Image Width="32" Height="32" 
+                               Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}"
+                               IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" 
+                                     FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}"
+                                     Foreground="Gray"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 
 </Window>

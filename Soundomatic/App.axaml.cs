@@ -1,44 +1,76 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.DependencyInjection;
+using Soundomatic.Extensions;
+using Soundomatic.Hooks;
+using Soundomatic.Storage.DatabaseInitialization;
 using Soundomatic.ViewModels;
 using Soundomatic.Views;
 
 namespace Soundomatic;
 
-public partial class App : Application
+/// <summary>
+/// Основной класс приложения
+/// </summary>
+public class App : Application
 {
+    private IServiceProvider? _services;
+    
+    /// <summary>
+    /// Инициализация приложения
+    /// </summary>
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        _services = new ServiceCollection().AddServices().BuildServiceProvider();
+        using var scope = _services.CreateScope();
+
+        var scopeServiceProvider = scope.ServiceProvider;
+        ApplicationDatabaseInitializer.Init(scopeServiceProvider);
+
+        InitializeHooks();
     }
 
+    /// <summary>
+    /// Инициализация глобальных хуков
+    /// </summary>
+    private void InitializeHooks()
+    {
+        var hookHandler = _services?.GetService<OnKeyPressedHookHandler>();
+        Task.Run(() => hookHandler?.StartAsync());
+    }
+    
+    /// <summary>
+    /// Метол для настройки главного окна, после инициализации фреймворка
+    /// </summary>
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = _services?.GetService<MainWindowViewModel>(),
             };
         }
 
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
+    /// <summary>
+    /// Отключает валидацию данных на основе аннотаций в Avalonia
+    /// </summary>
+    private static void DisableAvaloniaDataAnnotationValidation()
     {
-        // Get an array of plugins to remove
         var dataValidationPluginsToRemove =
             BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
-        // remove each entry found
         foreach (var plugin in dataValidationPluginsToRemove)
         {
             BindingPlugins.DataValidators.Remove(plugin);
