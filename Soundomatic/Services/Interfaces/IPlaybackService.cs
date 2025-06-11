@@ -11,8 +11,9 @@ public interface IPlaybackService
     /// <summary>
     /// Метод для воспроизведения звука из списка звуков пака
     /// </summary>
-    /// <param name="sounds"></param>
-    /// <param name="strategiesType"></param>
-    /// <returns></returns>
-    Sound? GetNextSoundToPlay(ICollection<Sound> sounds, Enums.PlaybackStrategy strategiesType);
+    /// <param name="packName">Название пака</param>
+    /// <param name="sounds">Список доступных звуков</param>
+    /// <param name="strategiesType">Стратегия выбора звука</param>
+    /// <returns>Объект звука</returns>
+    Sound? GetNextSoundToPlay(string packName, ICollection<Sound> sounds, Enums.PlaybackStrategy strategiesType);
 }
