@@ -10,12 +10,12 @@ namespace Soundomatic.PlaybackStrategy;
 /// </summary>
 public class RandomPlaybackStrategy : IPlaybackStrategy
 {
-    private Random random = new Random();
+    private readonly Random _random = new();
 
     /// <summary>
     /// Коллекция для хранения индексов последних воспроизводимых звуков по названиям наборов
     /// </summary>
-    private ConcurrentDictionary<string, Sound> indexLastPlayed = new ConcurrentDictionary<string, Sound>();
+    private readonly ConcurrentDictionary<string, Sound> _indexLastPlayed = new();
 
     /// <inheritdoc />
     public Sound SelectSound(string packName, IList<Sound> sounds)
@@ -27,21 +27,21 @@ public class RandomPlaybackStrategy : IPlaybackStrategy
 
         if (sounds.Count == 1)
         {
-            indexLastPlayed[packName] = sounds[0];
+            _indexLastPlayed[packName] = sounds[0];
             return sounds[0];
         }
 
-        indexLastPlayed.TryGetValue(packName, out Sound? lastPlayed);
+        _indexLastPlayed.TryGetValue(packName, out var lastPlayed);
         Sound playSound;
 
         do
         {
-            int currentIndex = random.Next(sounds.Count);
+            var currentIndex = _random.Next(sounds.Count);
             playSound = sounds[currentIndex];
 
         } while (playSound == lastPlayed);
 
-        indexLastPlayed[packName] = playSound;
+        _indexLastPlayed[packName] = playSound;
         return playSound;
     }
 } 

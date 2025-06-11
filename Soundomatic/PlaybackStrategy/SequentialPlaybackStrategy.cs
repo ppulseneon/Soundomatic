@@ -13,7 +13,7 @@ public class SequentialPlaybackStrategy : IPlaybackStrategy
     /// <summary>
     /// Коллекция для хранения индексов последних воспроизводимых звуков по названиям наборов
     /// </summary>
-    private ConcurrentDictionary<string, int> indexLastPlayed = new ConcurrentDictionary<string, int>();
+    private readonly ConcurrentDictionary<string, int> _indexLastPlayed = new();
 
     /// <inheritdoc />
     public Sound SelectSound(string packName, IList<Sound> sounds)
@@ -23,8 +23,8 @@ public class SequentialPlaybackStrategy : IPlaybackStrategy
             throw new InvalidOperationException("Набор звуков не может быть пустым");
         }
 
-        int index = indexLastPlayed.GetOrAdd(packName, 0);
-        Sound playSound = sounds[index];
+        var index = _indexLastPlayed.GetOrAdd(packName, 0);
+        var playSound = sounds[index];
 
         index++;
         if (index >= sounds.Count)
@@ -32,7 +32,7 @@ public class SequentialPlaybackStrategy : IPlaybackStrategy
             index = 0;
         }
 
-        indexLastPlayed[packName] = index;
+        _indexLastPlayed[packName] = index;
         return playSound;
     }
 } 
