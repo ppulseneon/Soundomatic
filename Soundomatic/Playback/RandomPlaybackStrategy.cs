@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Soundomatic.Models;
 
-namespace Soundomatic.PlaybackStrategy;
+namespace Soundomatic.Playback;
 
 /// <summary>
 /// Стратегия случайного выбора звука

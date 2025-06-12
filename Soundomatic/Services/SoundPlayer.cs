@@ -11,18 +11,10 @@ namespace Soundomatic.Services;
 /// <summary>
 /// Плеер для воспроизведения звуков
 /// </summary>
-public class SoundPlayer : ISoundPlayer
+public class SoundPlayer(AppSettings settings, ISoundFileService fileService) : ISoundPlayer
 {
-    private readonly AppSettings _settings;
-    private readonly ISoundFileService _fileService;
-    private WaveOutEvent _waveOut;
-    
-    public SoundPlayer(AppSettings settings, ISoundFileService fileService)
-    {
-        _settings = settings;
-        _fileService = fileService;
-    }
-    
+    private WaveOutEvent _waveOut = null!;
+
     /// <summary>
     /// Воспроизвести указанный звук
     /// </summary>
@@ -30,14 +22,14 @@ public class SoundPlayer : ISoundPlayer
     /// <exception cref="FileNotFoundException">Ошибка, если файл недоступен</exception>
     public async Task PlaySoundAsync(Sound sound)
     {
-        var filePath = _fileService.GetSoundFilePath(sound);
+        var filePath = fileService.GetSoundFilePath(sound);
         
         if (!File.Exists(filePath))
         {
             throw new FileNotFoundException($"Файл звука не найден: {filePath}");
         }
 
-        var volume = _settings.Volume * sound.Volume / 100.0f;
+        var volume = settings.Volume * sound.Volume / 100.0f;
         
         await Task.Run(() =>
         {

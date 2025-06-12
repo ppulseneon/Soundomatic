@@ -1,6 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using SharpHook.Data;
+using SharpHook.Native;
 using Soundomatic.Models.Base;
 
 namespace Soundomatic.Models;

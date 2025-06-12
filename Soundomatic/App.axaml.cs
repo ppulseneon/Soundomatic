@@ -11,6 +11,7 @@ using Soundomatic.Hooks;
 using Soundomatic.Storage.DatabaseInitialization;
 using Soundomatic.ViewModels;
 using Soundomatic.Views;
+using Microsoft.Extensions.Configuration;
 
 namespace Soundomatic;
 
@@ -28,7 +29,12 @@ public class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
-        _services = new ServiceCollection().AddServices().BuildServiceProvider();
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+        
+        _services = new ServiceCollection().AddServices(configuration).BuildServiceProvider();
         using var scope = _services.CreateScope();
 
         var scopeServiceProvider = scope.ServiceProvider;

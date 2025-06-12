@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Soundomatic.Enums;
 using Soundomatic.Models;
-using Soundomatic.PlaybackStrategy;
+using Soundomatic.Playback;
 using Soundomatic.Services.Interfaces;
 
 namespace Soundomatic.Services;
@@ -11,22 +12,22 @@ namespace Soundomatic.Services;
 /// </summary>
 public class PlaybackService: IPlaybackService
 {
-    private readonly Dictionary<Enums.PlaybackStrategy, IPlaybackStrategy> _strategies = new()
+    private readonly Dictionary<PlaybackStrategyType, IPlaybackStrategy> _strategies = new()
     {
-        { Enums.PlaybackStrategy.Random, new RandomPlaybackStrategy() },
-        { Enums.PlaybackStrategy.Sequential, new SequentialPlaybackStrategy() }
+        { PlaybackStrategyType.Random, new RandomPlaybackStrategy() },
+        { PlaybackStrategyType.Sequential, new SequentialPlaybackStrategy() }
     };
 
-    public Sound? GetNextSoundToPlay(ICollection<Sound> sounds, Enums.PlaybackStrategy strategiesType)
+    public Sound? GetNextSoundToPlay(string packName, ICollection<Sound> sounds, PlaybackStrategyType strategiesTypeType)
     {
         if (sounds.Count == 0) return null;
 
         var soundsList = sounds.ToList();
-        if (!_strategies.TryGetValue(strategiesType, out var strategy))
+        if (!_strategies.TryGetValue(strategiesTypeType, out var strategy))
         {
-            strategy = _strategies[Enums.PlaybackStrategy.Sequential];
+            strategy = _strategies[PlaybackStrategyType.Sequential];
         }
 
-        return strategy.SelectSound(soundsList);
+        return strategy.SelectSound(packName, soundsList);
     }
 }
