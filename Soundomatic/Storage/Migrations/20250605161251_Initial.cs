@@ -19,7 +19,8 @@ namespace Soundomatic.Storage.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     IconData = table.Column<byte[]>(type: "BLOB", nullable: true),
-                    IconMimeType = table.Column<string>(type: "TEXT", nullable: true),
+                    PlaybackStrategyType = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0),
+                    IconMimeType = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
                     IsDefault = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -84,7 +85,7 @@ namespace Soundomatic.Storage.Migrations
                 name: "IX_Sounds_SoundPackId",
                 table: "Sounds",
                 column: "SoundPackId");
-        }
+            }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)

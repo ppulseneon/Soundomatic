@@ -96,6 +96,7 @@ namespace Soundomatic.Storage.Migrations
                         .HasColumnType("BLOB");
 
                     b.Property<string>("IconMimeType")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsDefault")
@@ -107,6 +108,11 @@ namespace Soundomatic.Storage.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PlaybackStrategyType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 
