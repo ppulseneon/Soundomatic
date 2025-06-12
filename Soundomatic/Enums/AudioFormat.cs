@@ -1,4 +1,4 @@
-﻿namespace Soundomatic.Models.Enums;
+﻿namespace Soundomatic.Enums;
 
 /// <summary>
 /// Форматы аудио-файлов

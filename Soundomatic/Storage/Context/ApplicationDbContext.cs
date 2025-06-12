@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Soundomatic.Enums;
 using Soundomatic.Models;
 
 namespace Soundomatic.Storage.Context;
@@ -40,7 +41,7 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.IsDefault).HasDefaultValue(false);
-            
+            entity.Property(e => e.PlaybackStrategyType).HasDefaultValue(PlaybackStrategyType.Sequential);
             entity.HasMany(e => e.Sounds)
                 .WithOne(e => e.SoundPack)
                 .HasForeignKey(e => e.SoundPackId)

@@ -25,6 +25,8 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
         <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="SharpHook" Version="6.1.0" />
@@ -38,4 +40,11 @@
     <ItemGroup>
         <Folder Include="Storage\Migrations\" />
     </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
 </Project>

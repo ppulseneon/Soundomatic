@@ -13,7 +13,7 @@ public interface IPlaybackService
     /// </summary>
     /// <param name="packName">Название пака</param>
     /// <param name="sounds">Список доступных звуков</param>
-    /// <param name="strategiesType">Стратегия выбора звука</param>
+    /// <param name="strategiesTypeType">Стратегия выбора звука</param>
     /// <returns>Объект звука</returns>
-    Sound? GetNextSoundToPlay(string packName, ICollection<Sound> sounds, Enums.PlaybackStrategy strategiesType);
+    Sound? GetNextSoundToPlay(string packName, ICollection<Sound> sounds, Enums.PlaybackStrategyType strategiesTypeType);
 }

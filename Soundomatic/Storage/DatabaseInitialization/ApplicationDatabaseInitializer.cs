@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Avalonia.Platform;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SharpHook.Data;
+using SharpHook.Native;
 using Soundomatic.Models;
-using Soundomatic.Models.Enums;
 using Soundomatic.Services.Interfaces;
 using Soundomatic.Storage.Context;
-using SharpHook.Data;
+using Soundomatic.Enums;
 
 namespace Soundomatic.Storage.DatabaseInitialization;
 
