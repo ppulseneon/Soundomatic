@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using Soundomatic.Models;
 
-namespace Soundomatic.PlaybackStrategy;
+namespace Soundomatic.Playback;
 
 /// <summary>
 /// Интерфейс для стратегий выбора звука
 /// </summary>
 public interface IPlaybackStrategy
 {
-
     /// <summary>
     /// Выбирает звук из пака для воспроизведения
     /// </summary>

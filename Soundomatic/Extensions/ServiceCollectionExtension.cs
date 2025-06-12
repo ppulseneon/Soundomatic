@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Soundomatic.Services;
 using Soundomatic.Services.Interfaces;
@@ -18,12 +19,14 @@ public static class ServiceCollectionExtension
     /// Метод регистрирует пользовательские сервисы в контейнере DI
     /// </summary>
     /// <param name="services">Абстрактная коллекция зависимостей</param>
-    public static IServiceCollection AddServices(this IServiceCollection services)
+    /// <param name="configuration">Конфигурация приложения</param>
+    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         return services
+            .AddSingleton(configuration)
             .AddViewModels()
             .AddAppSettings()
-            .AddStorageServices()
+            .AddStorageServices(configuration)
             .AddApplicationServices();
     }
     
@@ -52,13 +55,14 @@ public static class ServiceCollectionExtension
     /// Метод для регистрации сервисов хранилища
     /// </summary>
     /// <param name="services">Абстрактная коллекция зависимостей</param>
-    private static IServiceCollection AddStorageServices(this IServiceCollection services)
+    /// <param name="configuration">Конфигурация приложения</param>
+    private static IServiceCollection AddStorageServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var settings = new DbSettings();
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         return services
             .AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(settings.ConnectionString));
+                options.UseSqlite(connectionString));
     }
     
     /// <summary>

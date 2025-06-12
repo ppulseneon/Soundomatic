@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Soundomatic.Enums;
 using Soundomatic.Models.Base;
-using Soundomatic.Models.Enums;
 
 namespace Soundomatic.Models;
 
