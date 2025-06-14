@@ -31,15 +31,37 @@ public class RandomPlaybackStrategy : IPlaybackStrategy
             return sounds[0];
         }
 
-        _indexLastPlayed.TryGetValue(packName, out var lastPlayed);
+        _indexLastPlayed.TryGetValue(packName, out Sound? lastPlayed);
         Sound playSound;
 
-        do
-        {
-            var currentIndex = _random.Next(sounds.Count);
-            playSound = sounds[currentIndex];
+        var currentIndex = _random.Next(sounds.Count);
+        playSound = sounds[currentIndex];
 
-        } while (playSound == lastPlayed);
+        if (lastPlayed is not null && sounds.Contains(lastPlayed) && playSound == lastPlayed)
+        {
+            if (_random.Next(0, 2) == 0)
+            {
+                var flagNewSound = false;
+
+                for (int i = 0; i < sounds.Count; i++)
+                {
+                    var newIndex = _random.Next(sounds.Count);
+                    var newSound = sounds[newIndex];
+
+                    if (newSound != lastPlayed)
+                    {
+                        playSound = newSound;
+                        flagNewSound = true;
+                        break;
+                    }
+                }
+
+                if (!flagNewSound)
+                {
+                    playSound = lastPlayed;
+                }
+            }
+        }
 
         _indexLastPlayed[packName] = playSound;
         return playSound;
