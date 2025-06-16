@@ -6,12 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using Soundomatic.Extensions;
 using Soundomatic.Hooks;
-using Soundomatic.Storage.DatabaseInitialization;
 using Soundomatic.ViewModels;
 using Soundomatic.Views;
 using Microsoft.Extensions.Configuration;
+using Soundomatic.Extensions;
+using Soundomatic.Storage.DatabaseInitialization;
 
 namespace Soundomatic;
 

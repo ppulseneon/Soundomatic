@@ -21,7 +21,7 @@ public class SoundPack: BaseEntity
     /// <summary>
     /// Звуки, входящие в группу
     /// </summary>
-    public ICollection<Sound> Sounds { get; set; } = [];
+    public List<Sound> Sounds { get; set; } = [];
     
     /// <summary>
     /// Данные иконки в формате байтов
