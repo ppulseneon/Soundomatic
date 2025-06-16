@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Soundomatic.Extensions.Factories;
 using Soundomatic.Services;
 using Soundomatic.Services.Interfaces;
-using Soundomatic.Settings;
 using Soundomatic.Storage;
 using Soundomatic.Storage.Context;
 using Soundomatic.ViewModels;
@@ -77,5 +77,14 @@ public static class ServiceCollectionExtension
             .AddScoped<ISoundFileService, SoundFileService>()
             .AddScoped<ISoundPlayer, SoundPlayer>()
             .AddScoped<IPlaybackService, PlaybackService>();
+    }
+
+    /// <summary>
+    /// Метод для регистрации сервиса системных уведомлений
+    /// </summary>
+    private static IServiceCollection AddNotifications(this IServiceCollection services)
+    {
+        var manager = NotificationManagerFactory.CreateNotificationManager();
+        return services.AddSingleton(manager);
     }
 }

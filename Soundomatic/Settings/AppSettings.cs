@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Soundomatic.Models;
-
-namespace Soundomatic.Settings;
+﻿namespace Soundomatic.Settings;
 
 public class AppSettings
 {
@@ -19,6 +16,4 @@ public class AppSettings
     /// Флаг, указывающий, должно ли приложение запускаться автоматически при старте системы
     /// </summary>
     public bool AutoRun { get; set; } = true;
-
-    public List<KeyBinding> KeyBindings { get; set; } = [];
 }
