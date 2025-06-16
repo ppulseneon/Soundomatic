@@ -28,7 +28,6 @@ public class BaseException: Exception
     /// Фабричный метод для вызова ошибки и её обработчика 
     /// </summary>
     /// <param name="message"></param>
-    /// <typeparam name="T"></typeparam>
     public static async Task<T> ThrowAsync<T>(string message) where T : BaseException
     {
         var exception = (T)Activator.CreateInstance(typeof(T), message)!;

@@ -6,4 +6,4 @@ namespace Soundomatic.Exceptions;
 /// Ошибка запуска приложения
 /// </summary>
 /// <param name="message">Сообщение об ошибке</param>
-public abstract class StartupException(string message) : SystemNotificationTypeException(message);
+public class StartupException(string message) : SystemNotificationTypeException(message);
