@@ -85,7 +85,7 @@ namespace Soundomatic.Storage.Migrations
                 name: "IX_Sounds_SoundPackId",
                 table: "Sounds",
                 column: "SoundPackId");
-            }
+        }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Avalonia.Platform;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Events;
 using Soundomatic.Extensions.Factories;
 using Soundomatic.Services;
 using Soundomatic.Services.Interfaces;
@@ -27,7 +30,8 @@ public static class ServiceCollectionExtension
             .AddViewModels()
             .AddAppSettings()
             .AddStorageServices(configuration)
-            .AddApplicationServices();
+            .AddApplicationServices()
+            .AddLogger();
     }
     
     /// <summary>
@@ -78,13 +82,35 @@ public static class ServiceCollectionExtension
             .AddScoped<ISoundPlayer, SoundPlayer>()
             .AddScoped<IPlaybackService, PlaybackService>();
     }
-
+    
     /// <summary>
-    /// Метод для регистрации сервиса системных уведомлений
+    /// Метод для регистрации сервиса логгирования
     /// </summary>
-    private static IServiceCollection AddNotifications(this IServiceCollection services)
+    /// <param name="serviceCollection">Абстрактная коллекция зависимостей</param>
+    private static IServiceCollection AddLogger(this IServiceCollection serviceCollection)
     {
-        var manager = NotificationManagerFactory.CreateNotificationManager();
-        return services.AddSingleton(manager);
+        const string outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+        const string logFileName = "log.txt";
+        
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(
+                restrictedToMinimumLevel: LogEventLevel.Debug, 
+                outputTemplate: outputTemplate
+            )
+            .WriteTo.File(
+                logFileName,
+                restrictedToMinimumLevel: LogEventLevel.Warning,
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 2,
+                shared: true, 
+                outputTemplate: outputTemplate
+            )
+            .Enrich.FromLogContext()
+            .CreateLogger();
+
+        serviceCollection.AddLogging(loggingBuilder =>
+            loggingBuilder.AddSerilog(dispose: true));
+        
+        return serviceCollection;
     }
 }
