@@ -85,4 +85,45 @@ public class App(IServiceProvider serviceProvider) : Application
             Environment.Exit(1);
         }
     }
+
+    /// <summary>
+    /// Открывает приложение по нажатию на иконку в трее
+    /// </summary>
+    private void TrayIconOnClicked(object? sender, EventArgs e)
+    {
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifitime) return;
+        var mainWindow = desktopLifitime.MainWindow;
+
+        if (mainWindow == null || mainWindow.IsVisible) return;
+        mainWindow.Show();
+        mainWindow.Activate();
+    }
+
+    /// <summary>
+    /// Открывает приложение по нажатию на пункт в меню в трее
+    /// </summary>
+    private void OpenApplicationOnClick(object? sender, EventArgs e)
+    {
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifitime) return;
+        var mainWindow = desktopLifitime.MainWindow;
+
+        if (mainWindow == null || mainWindow.IsVisible) return;
+        mainWindow.Show();
+        mainWindow.Activate();
+    }
+
+    /// <summary>
+    /// Открывает окно настроек по нажатию на пункт меню в трее
+    /// </summary>
+    private void OpenSettingsOnClock(object? sender, EventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Полностью закрывает приложение и снимает задачу с процесса
+    /// </summary>
+    private void CloseApplicationOnClick(object? sender, EventArgs e)
+    {
+        Environment.Exit(0);
+    }
 }
