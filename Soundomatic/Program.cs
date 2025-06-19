@@ -1,32 +1,63 @@
 ﻿using Avalonia;
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Soundomatic.Exceptions;
 using Soundomatic.Exceptions.Base;
 
 namespace Soundomatic;
 
+/// <summary>
+/// Класс для инициализации приложения
+/// </summary>
 sealed class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
+    /// <summary>
+    /// Точка входа в приложение. Инициализирует и запускает приложение
+    /// </summary>
+    /// <param name="args">Аргументы командной строки</param>
     [STAThread]
     public static void Main(string[] args)
     {
         try
         {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            var serviceProvider = Builder.BuildServices();
+            Builder.InitializeApplicationCore(serviceProvider);
+            BuildAvaloniaApp(serviceProvider).StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
         {
-            _ = BaseException.ThrowAsync<StartupException>(ex.Message);
+            ProcessStartupException(ex);
         }
     }
+    
+    /// <summary>
+    /// Создает и настраивает экземпляр приложения с сервисами
+    /// </summary>
+    /// <param name="serviceProvider">Провайдер сервисов для внедрения зависимостей</param>
+    /// <returns>Настроенный экземпляр AppBuilder</returns>
+    private static AppBuilder BuildAvaloniaApp(IServiceProvider serviceProvider)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<App>>();
+        logger.LogInformation("Application service provider built. Configuring App.");
         
-    // Avalonia configuration, don't remove; also used by visual designer.
-    private static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .WithInterFont()
-            .LogToTrace();
+        return AppBuilder.Configure(() => new App(serviceProvider))
+           .UsePlatformDetect()
+           .WithInterFont()
+           .LogToTrace();
+    }
+    
+    /// <summary>
+    /// Обрабатывает исключения, возникающие во время запуска приложения.
+    /// Логирует ошибку и выбрасывает асинхронное исключение для дальнейшей обработки.
+    /// </summary>
+    /// <param name="ex">Исключение, которое произошло во время запуска.</param>
+    private static void ProcessStartupException(Exception ex)
+    {
+        var serviceProvider = Builder.BuildServices();
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        
+        logger.LogError(ex, "An unhandled exception occurred during application startup.");
+        BaseException.ThrowAsync<StartupException>();
+    }
 }

@@ -3,53 +3,28 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
-using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using Soundomatic.Hooks;
+using Microsoft.Extensions.Logging;
+using Soundomatic.Exceptions;
+using Soundomatic.Exceptions.Base;
 using Soundomatic.ViewModels;
 using Soundomatic.Views;
-using Microsoft.Extensions.Configuration;
-using Soundomatic.Extensions;
-using Soundomatic.Storage.DatabaseInitialization;
 
 namespace Soundomatic;
 
 /// <summary>
 /// Основной класс приложения
 /// </summary>
-public class App : Application
+public class App(IServiceProvider serviceProvider) : Application
 {
-    private IServiceProvider? _services;
-    
     /// <summary>
     /// Инициализация приложения
     /// </summary>
     public override void Initialize()
     {
+        Resources[typeof(IServiceProvider)] = serviceProvider;
         AvaloniaXamlLoader.Load(this);
-
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
-        
-        _services = new ServiceCollection().AddServices(configuration).BuildServiceProvider();
-        using var scope = _services.CreateScope();
-
-        var scopeServiceProvider = scope.ServiceProvider;
-        ApplicationDatabaseInitializer.Init(scopeServiceProvider);
-
-        InitializeHooks();
-    }
-
-    /// <summary>
-    /// Инициализация глобальных хуков
-    /// </summary>
-    private void InitializeHooks()
-    {
-        var hookHandler = _services?.GetService<OnKeyPressedHookHandler>();
-        Task.Run(() => hookHandler?.StartAsync());
     }
     
     /// <summary>
@@ -57,12 +32,25 @@ public class App : Application
     /// </summary>
     public override void OnFrameworkInitializationCompleted()
     {
+        var logger = serviceProvider?.GetService<ILogger<App>>();
+
+        if (serviceProvider == null)
+        {
+            BaseException.ThrowAsync<StartupException>();
+            ShutdownApplication();
+            return;
+        }
+
+        logger?.LogInformation("Framework initialization complete. Initializing database");
+        Builder.InitializeDatabase(serviceProvider);
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             DisableAvaloniaDataAnnotationValidation();
+            
             desktop.MainWindow = new MainWindow
             {
-                DataContext = _services?.GetService<MainWindowViewModel>(),
+                DataContext = serviceProvider.GetService<MainWindowViewModel>(),
             };
         }
 
@@ -80,6 +68,21 @@ public class App : Application
         foreach (var plugin in dataValidationPluginsToRemove)
         {
             BindingPlugins.DataValidators.Remove(plugin);
+        }
+    }
+    
+    /// <summary>
+    /// Выполняем попытку завершения приложения
+    /// </summary>
+    private void ShutdownApplication()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            desktopLifetime.Shutdown();
+        }
+        else
+        {
+            Environment.Exit(1);
         }
     }
 }

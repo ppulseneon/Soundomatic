@@ -25,13 +25,21 @@ public class BaseException: Exception
     }
     
     /// <summary>
+    /// Фабричный метод для вызова ошибки и её обработчика с дефолтным сообщением 
+    /// </summary>
+    public static async void ThrowAsync<T>() where T : BaseException, new()
+    {
+        var exception = new T();
+        await exception.HandleAsync(exception);
+    }
+    
+    /// <summary>
     /// Фабричный метод для вызова ошибки и её обработчика 
     /// </summary>
     /// <param name="message"></param>
-    public static async Task<T> ThrowAsync<T>(string message) where T : BaseException
+    public static async void ThrowAsync<T>(string message) where T : BaseException
     {
         var exception = (T)Activator.CreateInstance(typeof(T), message)!;
         await exception.HandleAsync(exception);
-        return exception;
     }
 }
