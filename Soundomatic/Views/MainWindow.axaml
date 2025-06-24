@@ -3,40 +3,77 @@
         xmlns:vm="using:Soundomatic.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
         x:Class="Soundomatic.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/Soundomatic.ico"
-        Title="Soundomatic">
+        Title="Soundomatic"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        Width="500"
+        Height="500">
+
+    <Window.Resources>
+        <LinearGradientBrush x:Key="GradientBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+            <GradientStop Color="#C3A0FE" Offset="0.0" />
+            <GradientStop Color="#6B21A8" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Resources>
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*" Margin="10">
-        <TextBlock Text="Звуковые пакеты" 
-                   FontSize="24" 
-                   FontWeight="Bold" 
-                   Margin="0,0,0,10"/>
-        
-        <ListBox Grid.Row="1" 
-                 ItemsSource="{Binding SoundPacks}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Image Width="32" Height="32" 
-                               Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}"
-                               IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" 
-                                     FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}"
-                                     Foreground="Gray"/>
-                        </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </Grid>
+    <Border BorderThickness="4" BorderBrush="#2C1B3C"
+            CornerRadius="10"
+            PointerPressed="MainBorder_PointerPressed">
+        <Grid Background="#FF1D1A20" PointerPressed="Content_PointerPressed">
+            <TextBlock
+                Text="SOUNDOMATIC"
+                FontSize="20" Margin="16,20,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontWeight="Bold"
+                LineHeight="22"
+                Foreground="{StaticResource GradientBrush}" />
+
+            <Line
+                Margin="0,52,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                StartPoint="0,0"
+                EndPoint="500,0"
+                StrokeThickness="2"
+                Stroke="#2C1B3C" />
+        </Grid>
+    </Border>
+
+    <!-- <Grid RowDefinitions="Auto,*" Margin="10"> -->
+    <!--     <TextBlock Text="Звуковые пакеты"  -->
+    <!--                FontSize="24"  -->
+    <!--                FontWeight="Bold"  -->
+    <!--                Margin="0,0,0,10"/> -->
+    <!--      -->
+    <!--     <ListBox Grid.Row="1"  -->
+    <!--              ItemsSource="{Binding SoundPacks}"> -->
+    <!--         <ListBox.ItemTemplate> -->
+    <!--             <DataTemplate> -->
+    <!--                 <StackPanel Orientation="Horizontal" Spacing="10"> -->
+    <!--                     <Image Width="32" Height="32"  -->
+    <!--                            Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}" -->
+    <!--                            IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/> -->
+    <!--                     <StackPanel> -->
+    <!--                         <TextBlock Text="{Binding Name}"  -->
+    <!--                                  FontWeight="Bold"/> -->
+    <!--                         <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}" -->
+    <!--                                  Foreground="Gray"/> -->
+    <!--                     </StackPanel> -->
+    <!--                 </StackPanel> -->
+    <!--             </DataTemplate> -->
+    <!--         </ListBox.ItemTemplate> -->
+    <!--     </ListBox> -->
+    <!-- </Grid> -->
 
 </Window>
