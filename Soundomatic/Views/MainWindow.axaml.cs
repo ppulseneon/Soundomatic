@@ -2,6 +2,9 @@ using Avalonia.Controls;
 
 namespace Soundomatic.Views;
 
+/// <summary>
+/// РћСЃРЅРѕРІРЅРѕРµ РѕРєРЅРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ
+/// </summary>
 public partial class MainWindow : Window
 {
     public MainWindow()
@@ -11,7 +14,7 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// При закрытии приложения скрывает окно, но не снимает задачу с процесса
+    /// РњРµС‚РѕРґ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёСЏ Р·Р°РєСЂС‹С‚РёСЏ РѕРєРЅР°
     /// </summary>
     private void MainWindowClosing(object? sender, WindowClosingEventArgs e)
     {

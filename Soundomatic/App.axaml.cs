@@ -6,8 +6,6 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Soundomatic.Exceptions;
-using Soundomatic.Exceptions.Base;
 using Soundomatic.ViewModels;
 using Soundomatic.Views;
 
@@ -16,15 +14,29 @@ namespace Soundomatic;
 /// <summary>
 /// Основной класс приложения
 /// </summary>
-public class App(IServiceProvider serviceProvider) : Application
+public partial class App : Application
 {
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<App> _logger;
+    
+    /// <summary>
+    /// Конструктор
+    /// </summary>
+    /// <param name="serviceProvider">Сервис провайдер</param>
+    public App(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
+    }
+    
     /// <summary>
     /// Инициализация приложения
     /// </summary>
     public override void Initialize()
     {
-        Resources[typeof(IServiceProvider)] = serviceProvider;
+        Resources[typeof(IServiceProvider)] = _serviceProvider;
         AvaloniaXamlLoader.Load(this);
+        _logger.LogInformation("Application resources initialized and XAML loaded");
     }
     
     /// <summary>
@@ -32,26 +44,29 @@ public class App(IServiceProvider serviceProvider) : Application
     /// </summary>
     public override void OnFrameworkInitializationCompleted()
     {
-        var logger = serviceProvider?.GetService<ILogger<App>>();
+        _logger.LogInformation("Framework initialization completing");
 
-        if (serviceProvider == null)
+        try
         {
-            BaseException.ThrowAsync<StartupException>();
-            ShutdownApplication();
-            return;
-        }
+            _logger.LogInformation("Initializing database");
+            Builder.InitializeDatabase(_serviceProvider);
+            _logger.LogInformation("Database initialization complete");
 
-        logger?.LogInformation("Framework initialization complete. Initializing database");
-        Builder.InitializeDatabase(serviceProvider);
-        
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            DisableAvaloniaDataAnnotationValidation();
-            
-            desktop.MainWindow = new MainWindow
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                DataContext = serviceProvider.GetService<MainWindowViewModel>(),
-            };
+                DisableAvaloniaDataAnnotationValidation();
+
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = _serviceProvider.GetService<MainWindowViewModel>(),
+                };
+            }
+        }
+        catch (Exception? ex)
+        {
+            _logger.LogCritical(ex, "A critical error occurred during framework initialization");
+            ShutdownApplication(1); 
+            return;
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -71,21 +86,6 @@ public class App(IServiceProvider serviceProvider) : Application
         }
     }
     
-    /// <summary>
-    /// Выполняем попытку завершения приложения
-    /// </summary>
-    private void ShutdownApplication()
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-        {
-            desktopLifetime.Shutdown();
-        }
-        else
-        {
-            Environment.Exit(1);
-        }
-    }
-
     /// <summary>
     /// Открывает приложение по нажатию на иконку в трее
     /// </summary>
@@ -117,6 +117,7 @@ public class App(IServiceProvider serviceProvider) : Application
     /// </summary>
     private void OpenSettingsOnClock(object? sender, EventArgs e)
     {
+        _logger.LogInformation("Tray menu 'Open Settings' clicked. Functionality not yet implemented.");
     }
 
     /// <summary>
@@ -124,6 +125,26 @@ public class App(IServiceProvider serviceProvider) : Application
     /// </summary>
     private void CloseApplicationOnClick(object? sender, EventArgs e)
     {
-        Environment.Exit(0);
+        _logger.LogInformation("Tray menu 'Close Application' clicked. Exiting application.");
+        ShutdownApplication(0);
+    }
+    
+    /// <summary>
+    /// Выполняет попытку корректного или принудительного завершения приложения.
+    /// </summary>
+    /// <param name="exitCode">Код выхода программы</param>
+    private void ShutdownApplication(int exitCode = 0)
+    {
+        _logger.LogInformation("Attempting to shutdown application with exit code {exitCode}", exitCode);
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && exitCode == 0)
+        {
+            _logger.LogInformation("Shutting down via IClassicDesktopStyleApplicationLifetime.Shutdown().");
+            desktopLifetime.Shutdown(exitCode);
+        }
+        else
+        {
+            _logger.LogWarning("Forcing application exit with Environment.Exit({code})", exitCode);
+            Environment.Exit(exitCode);
+        }
     }
 }

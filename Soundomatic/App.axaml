@@ -4,36 +4,39 @@
              x:Class="Soundomatic.App"
              xmlns:local="using:Soundomatic"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-	<TrayIcon.Icons>
-		<TrayIcons>
-			<TrayIcon Icon="/Assets/Soundomatic.ico"
-	 				  ToolTipText="Soundomatic"
-	 				  Clicked="TrayIconOnClicked">
-				<TrayIcon.Menu>
-					<NativeMenu>
-						<NativeMenuItem Icon="/Assets/Soundomatic.ico" Header="Открыть Soundomatic" Click="OpenApplicationOnClick" />
-						<NativeMenuItem Icon="/Assets/TrayIcon/Settings.png" Header="Настройки" Click="OpenSettingsOnClock" />
-						<NativeMenuItem Icon="/Assets/TrayIcon/Close.png" Header="Закрыть Soundomatic" Click="CloseApplicationOnClick" />
-					</NativeMenu>
-				</TrayIcon.Menu>
-			</TrayIcon>
-		</TrayIcons>
-	</TrayIcon.Icons>
-	
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/Soundomatic.ico"
+                      ToolTipText="Soundomatic"
+                      Clicked="TrayIconOnClicked">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Icon="/Assets/Soundomatic.ico" Header="Открыть Soundomatic"
+                                        Click="OpenApplicationOnClick" />
+                        <NativeMenuItem Icon="/Assets/TrayIcon/Settings.png" Header="Настройки"
+                                        Click="OpenSettingsOnClock" />
+                        <NativeMenuItem Icon="/Assets/TrayIcon/Close.png" Header="Закрыть Soundomatic"
+                                        Click="CloseApplicationOnClick" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <local:ViewLocator />
     </Application.DataTemplates>
-  
+
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
 
     <Application.Resources>
         <ResourceDictionary>
-            <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
-            <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
+            <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter" />
+            <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
