@@ -15,65 +15,138 @@
         Width="500"
         Height="500">
 
-    <Window.Resources>
-        <LinearGradientBrush x:Key="GradientBrush" StartPoint="0%,0%" EndPoint="100%,0%">
-            <GradientStop Color="#C3A0FE" Offset="0.0" />
-            <GradientStop Color="#6B21A8" Offset="1" />
-        </LinearGradientBrush>
-    </Window.Resources>
-
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <Border BorderThickness="4" BorderBrush="#2C1B3C"
-            CornerRadius="10"
-            PointerPressed="MainBorder_PointerPressed">
-        <Grid Background="#FF1D1A20" PointerPressed="Content_PointerPressed">
-            <TextBlock
-                Text="SOUNDOMATIC"
-                FontSize="20" Margin="16,20,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                FontWeight="Bold"
-                LineHeight="22"
-                Foreground="{StaticResource GradientBrush}" />
+            CornerRadius="10" PointerPressed="MainBorder_PointerPressed">
+        
+        <Grid Background="#FF1D1A20" RowDefinitions="Auto,Auto,*,*" PointerPressed="Content_PointerPressed">
 
-            <Line
-                Margin="0,52,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                StartPoint="0,0"
-                EndPoint="500,0"
-                StrokeThickness="2"
-                Stroke="#2C1B3C" />
+            <!-- Title Bar -->
+            <DockPanel Grid.Row="0" Height="50" Background="Transparent">
+                
+                <!-- Logo -->
+                <TextBlock Text="SOUNDOMATIC"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource PageNameBrush}"
+                           VerticalAlignment="Center"
+                           Margin="16,8,0,0"
+                           DockPanel.Dock="Left" />
+
+                <!-- Control Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0">
+                    
+                    <!-- Button -->
+                    <Button Name="ManageSoundSetsButton"
+                            Classes="BaseButton"
+                            Click="ManageSoundSetsButton_Click">
+                        
+                        <!-- Button Icon -->
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Image Source="/Assets/Icons/Upload.png"
+                                       Width="22" 
+                                       Height="22"
+                                       VerticalAlignment="Center"/>
+                                
+                                <TextBlock Text="Управление звуками"
+                                           FontSize="14"
+                                           Foreground="#FFFFFF"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        
+                    </Button>
+                    
+                    <!-- Button -->
+                    <Button Name="MinimizeButton"
+                            Click="MinimizeButton_Click"
+                            Content="—"
+                            Margin="6,0,0,0"
+                            Width="28" Height="28"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
+                            VerticalAlignment="Center"/>
+                    
+                    <!-- Button -->
+                    <Button Name="CloseButton"
+                            Click="CloseButton_Click"
+                            Content="✕"
+                            Width="28" Height="28"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
+                            VerticalAlignment="Center"/>
+                </StackPanel>
+                
+            </DockPanel>
+
+            <!-- Separator Line -->
+            <Rectangle Grid.Row="1" Height="2" Fill="#2C1B3C" Margin="0" />
+
+            <!-- Main Content Area -->
+            <!-- Your commented-out ListBox and other content would go here -->
+            <!-- For example, to bring back your ListBox section: -->
+            <!--
+            <Grid Grid.Row="2" RowDefinitions="Auto,*" Margin="10">
+                <TextBlock Text="Звуковые пакеты"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="White"
+                           Margin="0,0,0,10"/>
+
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding SoundPacks}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Image Width="32" Height="32"
+                                       Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}"
+                                       IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}"
+                                             FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}"
+                                             Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            -->
+            
+            <!-- Border -->
+            <Border Grid.Row="2" Classes="LinkButtonContainer">
+
+                <!-- Button -->
+                <Button Name="LinkButton" Classes="LinkButton"> 
+                        
+                    <!-- StackPanel -->
+                    <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center">
+                        <TextBlock Text="+"
+                                   FontSize="28"
+                                   Foreground="#FFFFFF"
+                                   VerticalAlignment="Center"/>
+                                
+                        <TextBlock Text="Добавить клавишу"
+                                   FontSize="16"
+                                   Foreground="#FFFFFF"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                        
+                </Button>
+            </Border>
+            
+            <TextBlock Grid.Row="3" Text="Main Content Area Placeholder"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="White"/>
         </Grid>
     </Border>
-
-    <!-- <Grid RowDefinitions="Auto,*" Margin="10"> -->
-    <!--     <TextBlock Text="Звуковые пакеты"  -->
-    <!--                FontSize="24"  -->
-    <!--                FontWeight="Bold"  -->
-    <!--                Margin="0,0,0,10"/> -->
-    <!--      -->
-    <!--     <ListBox Grid.Row="1"  -->
-    <!--              ItemsSource="{Binding SoundPacks}"> -->
-    <!--         <ListBox.ItemTemplate> -->
-    <!--             <DataTemplate> -->
-    <!--                 <StackPanel Orientation="Horizontal" Spacing="10"> -->
-    <!--                     <Image Width="32" Height="32"  -->
-    <!--                            Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}" -->
-    <!--                            IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/> -->
-    <!--                     <StackPanel> -->
-    <!--                         <TextBlock Text="{Binding Name}"  -->
-    <!--                                  FontWeight="Bold"/> -->
-    <!--                         <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}" -->
-    <!--                                  Foreground="Gray"/> -->
-    <!--                     </StackPanel> -->
-    <!--                 </StackPanel> -->
-    <!--             </DataTemplate> -->
-    <!--         </ListBox.ItemTemplate> -->
-    <!--     </ListBox> -->
-    <!-- </Grid> -->
-
 </Window>

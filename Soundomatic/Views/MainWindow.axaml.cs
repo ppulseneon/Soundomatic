@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace Soundomatic.Views;
 
@@ -43,5 +44,25 @@ public partial class MainWindow : Window
         {
             this.BeginMoveDrag(e);
         }
+    }
+
+    private void MinimizeButton_Click(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void CloseButton_Click(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void ManageSoundSetsButton_Click(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void AddKeyButton_Click(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
     }
 }

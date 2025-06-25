@@ -1,0 +1,25 @@
+<!-- SharedResources.axaml -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <LinearGradientBrush x:Key="PageNameBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#C3A0FE" Offset="0.0" />
+        <GradientStop Color="#6B21A8" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#361E50" Offset="0.0" />
+        <GradientStop Color="#6B21A8" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonHoverBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#2A1145" Offset="0.0" />
+        <GradientStop Color="#501580" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonPressedBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#200D35" Offset="0.0" />
+        <GradientStop Color="#2E0C4A" Offset="1" />
+    </LinearGradientBrush>
+    
+</ResourceDictionary>
