@@ -22,10 +22,10 @@
     <Border BorderThickness="4" BorderBrush="#2C1B3C"
             CornerRadius="10" PointerPressed="MainBorder_PointerPressed">
         
-        <Grid Background="#FF1D1A20" RowDefinitions="Auto,Auto,*,*" PointerPressed="Content_PointerPressed">
+        <Grid Background="#FF1D1A20" RowDefinitions="Auto,Auto,Auto,*" PointerPressed="Content_PointerPressed">
 
             <!-- Title Bar -->
-            <DockPanel Grid.Row="0" Height="50" Background="Transparent">
+            <DockPanel Grid.Row="0" Height="50" Background="Transparent" PointerPressed="TitleBar_PointerPressed">
                 
                 <!-- Logo -->
                 <TextBlock Text="SOUNDOMATIC"
@@ -87,40 +87,6 @@
 
             <!-- Separator Line -->
             <Rectangle Grid.Row="1" Height="2" Fill="#2C1B3C" Margin="0" />
-
-            <!-- Main Content Area -->
-            <!-- Your commented-out ListBox and other content would go here -->
-            <!-- For example, to bring back your ListBox section: -->
-            <!--
-            <Grid Grid.Row="2" RowDefinitions="Auto,*" Margin="10">
-                <TextBlock Text="Звуковые пакеты"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           Margin="0,0,0,10"/>
-
-                <ListBox Grid.Row="1"
-                         ItemsSource="{Binding SoundPacks}"
-                         Background="Transparent"
-                         BorderThickness="0">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <Image Width="32" Height="32"
-                                       Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}"
-                                       IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Name}"
-                                             FontWeight="Bold" Foreground="White"/>
-                                    <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}"
-                                             Foreground="Gray"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            -->
             
             <!-- Border -->
             <Border Grid.Row="2" Classes="LinkButtonContainer">
@@ -144,9 +110,98 @@
                 </Button>
             </Border>
             
-            <TextBlock Grid.Row="3" Text="Main Content Area Placeholder"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                       Foreground="White"/>
+            <!-- Main Content -->
+            
+            <!-- ListBox -->
+            <ListBox Grid.Row="3"
+                     ItemsSource="{Binding KeyBindings}"
+                     Background="Transparent"
+                     BorderThickness="0">
+                
+                <!-- Item -->
+                <ListBox.ItemTemplate>
+                    
+                    <DataTemplate>
+                        <Border Classes="BoundKeyItem" Padding="16, 8, 16, 8">      
+
+                            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                
+                                <Panel Width="40" Height="40">
+                                    
+                                    <Border Width="40" Height="40" CornerRadius="20" ClipToBounds="True"
+                                            IsVisible="{Binding Pack.IconData, Converter={StaticResource NotNullToBoolConverter}}">
+                                        <Border.Background>
+                                            <ImageBrush Source="{Binding Pack.IconData, Converter={StaticResource ByteArrayToImageConverter}}"
+                                                        Stretch="UniformToFill"
+                                                        AlignmentX="Center" AlignmentY="Center"/>
+                                        </Border.Background>
+                                    </Border>
+
+                                    <Border Width="40" Height="40" CornerRadius="20" Background="#6B7280"
+                                            ClipToBounds="True"
+                                            IsVisible="{Binding Pack.IconData, Converter={StaticResource NullToBoolConverter }}">
+                                        <TextBlock Text="A"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                </Panel>
+
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <!-- todo: сделать кликабельным для установки/смены буквы -->
+                                    <TextBlock Text="{Binding Key}"
+                                               FontWeight="Bold"
+                                               Foreground="White"/>
+                                    
+                                    <!-- todo: маппить состояние -->
+                                    <TextBlock Text="Установлен звук"
+                                               Width="90"
+                                               FontWeight="Bold"
+                                               FontSize="10"
+                                               Foreground="#999999"/>
+                                </StackPanel>
+                                
+                                <!-- todo: уменьшить высоту и переделать стиль выпадающего списка -->
+                                <ComboBox Width="150"
+                                          Height="30"          
+                                          Padding="16,2"       
+                                          FontSize="12"
+                                          VerticalAlignment="Center"
+                                          Margin="10,0,0,0"
+                                          PlaceholderText="Текущий звук"
+                                          CornerRadius="10"     
+                                          BorderThickness="0"  
+                                          Foreground="Gray"    
+                                          FontWeight="Bold">   
+                                    <ComboBoxItem Content="Звук 1"/>
+                                    <ComboBoxItem Content="Звук 2"/>
+                                    <ComboBoxItem Content="Звук 3"/>
+                                </ComboBox>
+
+                                <Panel HorizontalAlignment="Stretch"/>
+
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <Button 
+                                            Classes="BaseButton"
+                                            Click="ListenButton_Click"
+                                            Content="Прослушать"
+                                            FontSize="12"
+                                            BorderThickness="0" CornerRadius="4"/>
+                                    <Button Content=":"
+                                            FontSize="12"
+                                            Padding="10,5"
+                                            Background="#EF4444"  Foreground="White"
+                                            BorderThickness="0" CornerRadius="4"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                
+            </ListBox>
         </Grid>
     </Border>
 </Window>

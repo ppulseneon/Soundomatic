@@ -6,6 +6,7 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Soundomatic.Services.Interfaces;
 using Soundomatic.ViewModels;
 using Soundomatic.Views;
 
@@ -28,7 +29,7 @@ public partial class App : Application
         _serviceProvider = serviceProvider;
         _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
     }
-    
+
     /// <summary>
     /// Инициализация приложения
     /// </summary>
@@ -56,7 +57,8 @@ public partial class App : Application
             {
                 DisableAvaloniaDataAnnotationValidation();
 
-                desktop.MainWindow = new MainWindow
+                var notificationsService = _serviceProvider.GetRequiredService<ISystemNotificationService>();
+                desktop.MainWindow = new MainWindow(notificationsService)
                 {
                     DataContext = _serviceProvider.GetService<MainWindowViewModel>(),
                 };

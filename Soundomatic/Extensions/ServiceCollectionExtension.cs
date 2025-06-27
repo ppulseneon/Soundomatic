@@ -1,4 +1,5 @@
-﻿using Avalonia.Platform;
+﻿using Avalonia.Controls.Notifications;
+using Avalonia.Platform;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,7 +81,15 @@ public static class ServiceCollectionExtension
             .AddScoped<IKeyBindingService, KeyBindingService>()
             .AddScoped<ISoundFileService, SoundFileService>()
             .AddScoped<ISoundPlayer, SoundPlayer>()
-            .AddScoped<IPlaybackService, PlaybackService>();
+            .AddScoped<IPlaybackService, PlaybackService>()
+            .AddSystemNotificationsServices();
+    }
+
+    private static IServiceCollection AddSystemNotificationsServices(this IServiceCollection services)
+    {
+        return services
+            .AddSingleton(_ => NotificationManagerFactory.CreateNotificationManager())
+            .AddScoped<ISystemNotificationService, SystemNotificationService>();
     }
     
     /// <summary>

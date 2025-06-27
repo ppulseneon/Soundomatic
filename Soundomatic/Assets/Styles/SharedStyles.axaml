@@ -1,16 +1,16 @@
 <!-- SharedStyles.axaml -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
+
     <Style Selector="Button.BaseButton">
         <Setter Property="Padding" Value="8,4" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="#FFFFFF" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Background" Value="{StaticResource ButtonBrush}" /> 
+        <Setter Property="Background" Value="{StaticResource ButtonBrush}" />
     </Style>
-    
+
     <Style Selector="Button.BaseButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{StaticResource ButtonHoverBackgroundBrush}" />
     </Style>
@@ -23,36 +23,49 @@
         <Setter Property="Background" Value="Gray" />
         <Setter Property="Opacity" Value="0.5" />
     </Style>
-    
+
     <Style Selector="Button.BaseButton:disabled">
         <Setter Property="Opacity" Value="0.5" />
     </Style>
-    
+
     <Style Selector="Border.LinkButtonContainer">
         <!-- todo: должен иметь dashed обводку и drop shadow effect -->
-        <Setter Property="BorderBrush" Value="#6B21A8"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="16"/>
-    </Style>
-    
-    <Style Selector="Button.LinkButton">
-        <Setter Property="Background" Value="#211D2F"/>
-        <Setter Property="Padding" Value="16,8,16,8"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="BorderThickness" Value="0"/>
-    </Style>
-    
-    <Style Selector="Button.LinkButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="#312D3F"/> 
-    </Style>
-        
-    <Style Selector="Button.LinkButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="#110D1F"/>
+        <Setter Property="BorderBrush" Value="#6B21A8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="16" />
     </Style>
 
+    <Style Selector="Button.LinkButton">
+        <Setter Property="Background" Value="#211D2F" />
+        <Setter Property="Padding" Value="16,4,16,4" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="Button.LinkButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#312D3F" />
+    </Style>
+
+    <Style Selector="Button.LinkButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#110D1F" />
+    </Style>
+
+    <Style Selector="Border.BoundKeyItem">
+        <Setter Property="Background" Value="{StaticResource BoundKeyItemBackgroundBrush}" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+    
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#1d1a20"/>
+    </Style>
+
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
 </Styles>
