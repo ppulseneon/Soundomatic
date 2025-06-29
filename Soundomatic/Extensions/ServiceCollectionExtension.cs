@@ -6,11 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using Soundomatic.Extensions.Factories;
+using Soundomatic.Hooks;
 using Soundomatic.Services;
 using Soundomatic.Services.Interfaces;
 using Soundomatic.Storage;
 using Soundomatic.Storage.Context;
 using Soundomatic.ViewModels;
+using Soundomatic.Views;
 
 namespace Soundomatic.Extensions;
 
@@ -30,9 +32,20 @@ public static class ServiceCollectionExtension
             .AddSingleton(configuration)
             .AddViewModels()
             .AddAppSettings()
+            .AddHandlers()
             .AddStorageServices(configuration)
             .AddApplicationServices()
             .AddLogger();
+    }
+    
+    /// <summary>
+    /// Метод для регистрации обработчиков в DI
+    /// </summary>
+    /// <param name="services">Абстрактная коллекция зависимостей</param>
+    private static IServiceCollection AddHandlers(this IServiceCollection services)
+    {
+        return services
+            .AddSingleton<OnKeyPressedHookHandler>(); 
     }
     
     /// <summary>
@@ -43,7 +56,8 @@ public static class ServiceCollectionExtension
     {
         return services
             .AddTransient<ViewModelBase>()
-            .AddTransient<MainWindowViewModel>();
+            .AddTransient<MainWindow>()
+            .AddSingleton<MainWindowViewModel>(); 
     }
 
     /// <summary>

@@ -16,6 +16,8 @@ public class SoundFileService : ISoundFileService
     public SoundFileService()
     {
         var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        
+        // todo: вынести в настройки?
         _soundsDirectory = Path.Combine(appDirectory, "Sounds");
         
         CreateDirectoryIfNotExists(_soundsDirectory);
@@ -64,7 +66,7 @@ public class SoundFileService : ISoundFileService
     }
     
     #region Local
-    private void CreateDirectoryIfNotExists(string directory)
+    private static void CreateDirectoryIfNotExists(string directory)
     {
         if (!Directory.Exists(directory))
         {

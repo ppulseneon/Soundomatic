@@ -22,7 +22,6 @@ sealed class Program
         try
         {
             var serviceProvider = Builder.BuildServices();
-            Builder.InitializeApplicationCore(serviceProvider);
             BuildAvaloniaApp(serviceProvider) 
                 .StartWithClassicDesktopLifetime(args);
         }

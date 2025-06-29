@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Soundomatic.Services.Interfaces;
+using Soundomatic.ViewModels;
 
 namespace Soundomatic.Views;
 
@@ -10,10 +11,14 @@ namespace Soundomatic.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
+    private readonly ISoundPlayer _soundPlayer;
     private readonly ISystemNotificationService _systemNotificationService;
     
-    public MainWindow(ISystemNotificationService systemNotificationService)
+    public MainWindow(MainWindowViewModel viewModel, ISoundPlayer soundPlayer,
+        ISystemNotificationService systemNotificationService)
     {
+        DataContext = viewModel;
+        _soundPlayer = soundPlayer;
         _systemNotificationService = systemNotificationService;
         InitializeComponent();
     }
@@ -88,8 +93,14 @@ public partial class MainWindow : Window
     /// <summary>
     /// Метод для прослушивания пака звуков
     /// </summary>
-    private void ListenButton_Click(object? sender, RoutedEventArgs e)
+    private async void ListenButton_Click(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        if (sender is not Button { DataContext: KeyBindingViewModel keyBindingViewModel }) return;
+        
+        var selectedPack = keyBindingViewModel.Pack;
+        if (selectedPack != null)
+        {
+            await _soundPlayer.PlayAsync(selectedPack);
+        }
     }
 }

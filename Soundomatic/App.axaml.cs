@@ -49,6 +49,8 @@ public partial class App : Application
 
         try
         {
+            _logger.LogInformation("Initializing application core");
+            Builder.InitializeApplicationCore(_serviceProvider);
             _logger.LogInformation("Initializing database");
             Builder.InitializeDatabase(_serviceProvider);
             _logger.LogInformation("Database initialization complete");
@@ -56,12 +58,7 @@ public partial class App : Application
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 DisableAvaloniaDataAnnotationValidation();
-
-                var notificationsService = _serviceProvider.GetRequiredService<ISystemNotificationService>();
-                desktop.MainWindow = new MainWindow(notificationsService)
-                {
-                    DataContext = _serviceProvider.GetService<MainWindowViewModel>(),
-                };
+                desktop.MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             }
         }
         catch (Exception? ex)

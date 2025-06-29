@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Soundomatic.Models;
 using Soundomatic.Services.Interfaces;
@@ -12,23 +12,44 @@ namespace Soundomatic.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IKeyBindingService _keyBindingService;
-    
-    [ObservableProperty]
-    private ObservableCollection<KeyBinding> _keyBindings = [];
+    private readonly ISoundStorageService _soundStorageService;
 
-    public MainWindowViewModel(IKeyBindingService keyBindingService)
+    [ObservableProperty] private ObservableCollection<SoundPack> _soundPacks = [];
+    [ObservableProperty] private ObservableCollection<KeyBindingViewModel> _keyBindings = [];
+
+    public MainWindowViewModel(IKeyBindingService keyBindingService, ISoundStorageService soundStorageService)
     {
         _keyBindingService = keyBindingService;
-        LoadSoundPacksAsync();
+        _soundStorageService = soundStorageService;
+        LoadDataAsync();
     }
-    
-    private async void LoadSoundPacksAsync()
+
+    private async void LoadDataAsync()
+    {
+        await LoadSoundPacksAsync();
+        await LoadKeyBindingsAsync();
+    }
+
+    private async Task LoadKeyBindingsAsync()
     {
         var bindings = await _keyBindingService.GetAllKeyBindingsAsync();
         KeyBindings.Clear();
+
         foreach (var binding in bindings)
         {
-            KeyBindings.Add(binding);
+            var keyBindingViewModel = new KeyBindingViewModel(SoundPacks, binding);
+            KeyBindings.Add(keyBindingViewModel);
+        }
+    }
+
+    private async Task LoadSoundPacksAsync()
+    {
+        var sounds = await _soundStorageService.GetAllSoundPacksAsync();
+        SoundPacks.Clear();
+
+        foreach (var sound in sounds)
+        {
+            SoundPacks.Add(sound);
         }
     }
 }
