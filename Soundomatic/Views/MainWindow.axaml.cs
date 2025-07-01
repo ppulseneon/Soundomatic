@@ -1,25 +1,19 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Soundomatic.Services.Interfaces;
 using Soundomatic.ViewModels;
+using Soundomatic.Views.Interfaces;
 
 namespace Soundomatic.Views;
 
 /// <summary>
 /// Основное окно приложения
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow : Window, IHideable
 {
-    private readonly ISoundPlayer _soundPlayer;
-    private readonly ISystemNotificationService _systemNotificationService;
-    
-    public MainWindow(MainWindowViewModel viewModel, ISoundPlayer soundPlayer,
-        ISystemNotificationService systemNotificationService)
+    public MainWindow(MainWindowViewModel viewModel)
     {
         DataContext = viewModel;
-        _soundPlayer = soundPlayer;
-        _systemNotificationService = systemNotificationService;
         InitializeComponent();
     }
 
@@ -28,6 +22,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void Content_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        // Принимаем событие и ничего не делаем
         e.Handled = true;
     }
 
@@ -36,6 +31,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void MainBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        // При зажатии рамки передвигаем окно
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             BeginMoveDrag(e);
@@ -47,6 +43,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        // При зажатии TitleBar передвигаем окно
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             BeginMoveDrag(e);
@@ -65,42 +62,10 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Метод для обработки нажатие на кнопку закрытия окна
+    /// Метод для сворачивания окна
     /// </summary>
-    private void CloseButton_Click(object? sender, RoutedEventArgs e)
+    public void HideWindow()
     {
-        // todo: отображать уведомление один раз до закрытия приложения
-        _systemNotificationService.SendNotification("Приложение было свернуто", "Вернуться можно при помощи панели значков в левом нижнем углу");
         Hide();
-    }
-
-    /// <summary>
-    /// Метод для открытия меню управления звуками
-    /// </summary>
-    private void ManageSoundSetsButton_Click(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
-    /// Метод для добавления новой клавиши
-    /// </summary>
-    private void AddKeyButton_Click(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
-    /// Метод для прослушивания пака звуков
-    /// </summary>
-    private async void ListenButton_Click(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not Button { DataContext: KeyBindingViewModel keyBindingViewModel }) return;
-        
-        var selectedPack = keyBindingViewModel.Pack;
-        if (selectedPack != null)
-        {
-            await _soundPlayer.PlayAsync(selectedPack);
-        }
     }
 }

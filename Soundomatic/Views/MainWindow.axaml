@@ -3,7 +3,7 @@
         xmlns:vm="using:Soundomatic.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
+        mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="500"
         x:Class="Soundomatic.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/Soundomatic.ico"
@@ -13,7 +13,7 @@
         Background="Transparent"
         TransparencyLevelHint="Transparent"
         ExtendClientAreaToDecorationsHint="True"
-        Width="500"
+        Width="540"
         Height="500">
 
     <Design.DataContext>
@@ -22,12 +22,12 @@
 
     <Border BorderThickness="4" BorderBrush="#2C1B3C"
             CornerRadius="10" PointerPressed="MainBorder_PointerPressed">
-        
+
         <Grid Background="#FF1D1A20" RowDefinitions="Auto,Auto,Auto,*" PointerPressed="Content_PointerPressed">
 
             <!-- Title Bar -->
             <DockPanel Grid.Row="0" Height="50" Background="Transparent" PointerPressed="TitleBar_PointerPressed">
-                
+
                 <!-- Logo -->
                 <TextBlock Text="SOUNDOMATIC"
                            FontSize="20"
@@ -43,27 +43,27 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Margin="0,0,10,0">
-                    
+
                     <!-- Button -->
                     <Button Name="ManageSoundSetsButton"
                             Classes="BaseButton"
-                            Click="ManageSoundSetsButton_Click">
-                        
+                            Command="{Binding ShowManageSoundViewCommand}">
+
                         <!-- Button Icon -->
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                                <Image Source="/Assets/Icons/Upload.png"
-                                       Width="22" 
-                                       Height="22"
-                                       VerticalAlignment="Center"/>
-                                
-                                <TextBlock Text="Управление звуками"
-                                           FontSize="14"
-                                           Foreground="#FFFFFF"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        
+                            <Image Source="/Assets/Icons/Upload.png"
+                                   Width="22"
+                                   Height="22"
+                                   VerticalAlignment="Center" />
+
+                            <TextBlock Text="Управление звуками"
+                                       FontSize="14"
+                                       Foreground="#FFFFFF"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+
                     </Button>
-                    
+
                     <!-- Button -->
                     <Button Name="MinimizeButton"
                             Click="MinimizeButton_Click"
@@ -72,69 +72,70 @@
                             Width="28" Height="28"
                             FontSize="14" FontWeight="Bold"
                             Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
-                            VerticalAlignment="Center"/>
-                    
+                            VerticalAlignment="Center" />
+
                     <!-- Button -->
                     <Button Name="CloseButton"
-                            Click="CloseButton_Click"
+                            Command="{Binding HideApplicationCommand}"
                             Content="✕"
                             Width="28" Height="28"
                             FontSize="14" FontWeight="Bold"
                             Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center" />
                 </StackPanel>
-                
+
             </DockPanel>
 
             <!-- Separator Line -->
             <Rectangle Grid.Row="1" Height="2" Fill="#2C1B3C" Margin="0" />
-            
+
             <!-- Border -->
             <Border Grid.Row="2" Classes="LinkButtonContainer">
 
                 <!-- Button -->
-                <Button Name="LinkButton" Classes="LinkButton"> 
-                        
+                <Button Name="LinkButton" Classes="LinkButton" Command="{Binding AddKeyBindingCommand}">
+
                     <!-- StackPanel -->
                     <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center">
                         <TextBlock Text="+"
                                    FontSize="28"
                                    Foreground="#FFFFFF"
-                                   VerticalAlignment="Center"/>
-                                
+                                   VerticalAlignment="Center" />
+
                         <TextBlock Text="Добавить клавишу"
                                    FontSize="16"
                                    Foreground="#FFFFFF"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center" />
                     </StackPanel>
-                        
+
                 </Button>
             </Border>
-            
+
             <!-- Main Content -->
-            
+
             <!-- ListBox -->
             <ListBox Grid.Row="3"
                      ItemsSource="{Binding KeyBindings}"
                      Background="Transparent"
                      BorderThickness="0">
-                
+
                 <!-- Item -->
                 <ListBox.ItemTemplate>
-                    
+
                     <DataTemplate>
-                        <Border Classes="BoundKeyItem" Padding="16, 8, 16, 8">      
+                        <Border Classes="BoundKeyItem" Padding="16, 8, 16, 8">
 
                             <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                                
+
                                 <Panel Width="40" Height="40">
-                                    
+
                                     <Border Width="40" Height="40" CornerRadius="20" ClipToBounds="True"
                                             IsVisible="{Binding Pack.IconData, Converter={StaticResource NotNullToBoolConverter}}">
                                         <Border.Background>
-                                            <ImageBrush Source="{Binding Pack.IconData, Converter={StaticResource ByteArrayToImageConverter}}"
-                                                        Stretch="UniformToFill"
-                                                        AlignmentX="Center" AlignmentY="Center"/>
+                                            <ImageBrush
+                                                Source="{Binding Pack.IconData, Converter={StaticResource ByteArrayToImageConverter}}"
+                                                Stretch="UniformToFill"
+                                                AlignmentX="Center" AlignmentY="Center" />
                                         </Border.Background>
                                     </Border>
 
@@ -146,61 +147,77 @@
                                                    FontWeight="SemiBold"
                                                    Foreground="White"
                                                    HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
+                                                   VerticalAlignment="Center" />
                                     </Border>
                                 </Panel>
 
                                 <StackPanel VerticalAlignment="Center">
-                                    
+
                                     <!-- todo: сделать кликабельным для установки/смены буквы -->
-                                    <TextBlock Text="{Binding KeyBinding.Key}"
+                                    <TextBlock Text="{Binding GetKeyCodeName}"
                                                FontWeight="Bold"
-                                               Foreground="White"/>
-                                    
+                                               Foreground="White" />
+
                                     <!-- todo: маппить состояние -->
-                                    <TextBlock Text="Установлен звук"
+                                    <TextBlock Text="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
                                                Width="90"
                                                FontWeight="Bold"
                                                FontSize="10"
-                                               Foreground="#999999"/>
+                                               Foreground="#999999" />
                                 </StackPanel>
-                                
+
                                 <!-- todo: уменьшить высоту и переделать стиль выпадающего списка -->
                                 <ComboBox Width="150"
-                                          Height="30"          
-                                          Padding="16,2"       
+                                          Height="30"
+                                          Padding="16,2"
                                           FontSize="12"
                                           VerticalAlignment="Center"
                                           Margin="10,0,0,0"
-                                          CornerRadius="10"     
-                                          BorderThickness="0"  
-                                          Foreground="Gray"         
+                                          CornerRadius="10"
+                                          BorderThickness="0"
+                                          Foreground="Gray"
                                           FontWeight="Bold"
                                           ItemsSource="{Binding AllAvailablePacks}"
                                           SelectedItem="{Binding Pack, Mode=TwoWay}"
                                           DisplayMemberBinding="{Binding Name}">
                                 </ComboBox>
 
-                                <Panel HorizontalAlignment="Stretch"/>
+                                <Panel HorizontalAlignment="Stretch" />
 
                                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                    <Button 
+
+                                    <!-- Button -->
+                                    <Button Name="PlaySoundButton"
                                             Classes="BaseButton"
-                                            Click="ListenButton_Click"
-                                            Content="Прослушать"
-                                            FontSize="12"
-                                            BorderThickness="0" CornerRadius="4"/>
+                                            Command="{Binding PlayPackSoundCommand}"
+                                            Padding="7, 7, 7, 7">
+
+                                        <!-- Button Icon -->
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <Image Source="/Assets/Icons/Volume.png"
+                                                   Width="18"
+                                                   Height="18"
+                                                   VerticalAlignment="Center" />
+
+                                            <TextBlock Text="Прослушать"
+                                                       FontSize="12"
+                                                       Foreground="#FFFFFF"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+
+                                    </Button>
+
                                     <Button Content=":"
                                             FontSize="12"
                                             Padding="10,5"
-                                            Background="#EF4444"  Foreground="White"
-                                            BorderThickness="0" CornerRadius="4"/>
+                                            Background="#EF4444" Foreground="White"
+                                            BorderThickness="0" CornerRadius="4" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-                
+
             </ListBox>
         </Grid>
     </Border>

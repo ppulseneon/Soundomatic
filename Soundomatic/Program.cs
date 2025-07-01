@@ -10,7 +10,7 @@ namespace Soundomatic;
 /// <summary>
 /// Класс для инициализации приложения
 /// </summary>
-sealed class Program
+internal sealed class Program
 {
     /// <summary>
     /// Точка входа в приложение. Инициализирует и запускает приложение

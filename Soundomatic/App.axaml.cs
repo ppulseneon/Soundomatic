@@ -6,8 +6,6 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Soundomatic.Services.Interfaces;
-using Soundomatic.ViewModels;
 using Soundomatic.Views;
 
 namespace Soundomatic;

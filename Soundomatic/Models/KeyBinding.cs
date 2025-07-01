@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 using SharpHook.Data;
 using Soundomatic.Models.Base;
 
@@ -20,17 +18,10 @@ public class KeyBinding: BaseEntity
     /// <summary>
     /// Связанная группа звуков
     /// </summary>
-    [Required]
-    public SoundPack Pack { get; set; } = null!;
+    public SoundPack? Pack { get; set; }
     
     /// <summary>
     /// ID связанной группы звуков
     /// </summary>
-    public long PackId { get; set; }
-    
-    /// <summary>
-    /// Список всех доступных паков для привязки
-    /// </summary>
-    [NotMapped]
-    public ObservableCollection<SoundPack>? AllAvailablePacks { get; set; }
+    public long? PackId { get; init; }
 }

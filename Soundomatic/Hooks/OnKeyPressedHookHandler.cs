@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SharpHook;
-using Soundomatic.Models;
-using Soundomatic.Playback;
 using Soundomatic.Services.Interfaces;
 using Soundomatic.Settings;
 using Soundomatic.Storage.Context;

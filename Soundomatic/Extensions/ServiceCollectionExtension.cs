@@ -1,6 +1,4 @@
-﻿using Avalonia.Controls.Notifications;
-using Avalonia.Platform;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -12,6 +10,8 @@ using Soundomatic.Services.Interfaces;
 using Soundomatic.Storage;
 using Soundomatic.Storage.Context;
 using Soundomatic.ViewModels;
+using Soundomatic.ViewModels.Factories;
+using Soundomatic.ViewModels.Factories.Interfaces;
 using Soundomatic.Views;
 
 namespace Soundomatic.Extensions;
@@ -35,13 +35,13 @@ public static class ServiceCollectionExtension
             .AddHandlers()
             .AddStorageServices(configuration)
             .AddApplicationServices()
+            .AddViewModelsFactories()
             .AddLogger();
     }
     
     /// <summary>
     /// Метод для регистрации обработчиков в DI
     /// </summary>
-    /// <param name="services">Абстрактная коллекция зависимостей</param>
     private static IServiceCollection AddHandlers(this IServiceCollection services)
     {
         return services
@@ -51,7 +51,6 @@ public static class ServiceCollectionExtension
     /// <summary>
     /// Метод для регистрации ViewModels в DI
     /// </summary>
-    /// <param name="services">Абстрактная коллекция зависимостей</param>
     private static IServiceCollection AddViewModels(this IServiceCollection services)
     {
         return services
@@ -61,13 +60,20 @@ public static class ServiceCollectionExtension
     }
 
     /// <summary>
+    /// Метод для регистрации фабрик ViewModels в DI
+    /// </summary>
+    private static IServiceCollection AddViewModelsFactories(this IServiceCollection services)
+    {
+        return services
+            .AddSingleton<IKeyBindingViewModelFactory, KeyBindingViewModelFactory>();
+    }
+
+    /// <summary>
     /// Метод для регистрации AppSettings в DI
     /// </summary>
-    /// <param name="services">Абстрактная коллекция зависимостей</param>
     private static IServiceCollection AddAppSettings(this IServiceCollection services)
     {
-        var fileStorage = new FileSettingsStorage();
-        return services.AddSingleton(fileStorage.Load());
+        return services.AddSingleton(new FileSettingsStorage().Load());
     }
     
     /// <summary>
@@ -87,7 +93,6 @@ public static class ServiceCollectionExtension
     /// <summary>
     /// Метод для регистрации сервисов приложения
     /// </summary>
-    /// <param name="services">Абстрактная коллекция зависимостей</param>
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         return services
@@ -99,6 +104,9 @@ public static class ServiceCollectionExtension
             .AddSystemNotificationsServices();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private static IServiceCollection AddSystemNotificationsServices(this IServiceCollection services)
     {
         return services
@@ -109,7 +117,6 @@ public static class ServiceCollectionExtension
     /// <summary>
     /// Метод для регистрации сервиса логгирования
     /// </summary>
-    /// <param name="serviceCollection">Абстрактная коллекция зависимостей</param>
     private static IServiceCollection AddLogger(this IServiceCollection serviceCollection)
     {
         const string outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";

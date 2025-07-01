@@ -37,6 +37,7 @@
             <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter" />
             <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+            <converters:BindingStatusToStringConverter x:Key="StatusToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
     
