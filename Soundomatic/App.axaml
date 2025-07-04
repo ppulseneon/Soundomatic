@@ -5,25 +5,6 @@
              xmlns:local="using:Soundomatic"
              RequestedThemeVariant="Default">
     
-    <TrayIcon.Icons>
-        <TrayIcons>
-            <TrayIcon Icon="/Assets/Soundomatic.ico"
-                      ToolTipText="Soundomatic"
-                      Clicked="TrayIconOnClicked">
-                <TrayIcon.Menu>
-                    <NativeMenu>
-                        <NativeMenuItem Icon="/Assets/Soundomatic.ico" Header="Открыть Soundomatic"
-                                        Click="OpenApplicationOnClick" />
-                        <NativeMenuItem Icon="/Assets/TrayIcon/Settings.png" Header="Настройки"
-                                        Click="OpenSettingsOnClock" />
-                        <NativeMenuItem Icon="/Assets/TrayIcon/Close.png" Header="Закрыть Soundomatic"
-                                        Click="CloseApplicationOnClick" />
-                    </NativeMenu>
-                </TrayIcon.Menu>
-            </TrayIcon>
-        </TrayIcons>
-    </TrayIcon.Icons>
-
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
