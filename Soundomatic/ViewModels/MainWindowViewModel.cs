@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SharpHook.Data;
+using Soundomatic.Messages;
 using Soundomatic.Models;
 using Soundomatic.Services.Interfaces;
 using Soundomatic.ViewModels.Factories.Interfaces;
-using Soundomatic.Views.Interfaces;
 
 namespace Soundomatic.ViewModels;
 
@@ -15,6 +16,7 @@ namespace Soundomatic.ViewModels;
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly IMessenger _messenger;
     private readonly IKeyBindingService _keyBindingService;
     private readonly ISoundStorageService _soundStorageService;
     private readonly IKeyBindingViewModelFactory _keyBindingViewModelFactory;
@@ -23,18 +25,18 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private ObservableCollection<SoundPack> _soundPacks = [];
     [ObservableProperty] private ObservableCollection<KeyBindingViewModel> _keyBindings = [];
-
-    public IHideable? View { get; set; }
+    
     
     public MainWindowViewModel(IKeyBindingViewModelFactory keyBindingViewModelFactory,
         IKeyBindingService keyBindingService,
         ISoundStorageService soundStorageService,
-        ISystemNotificationService systemNotificationService)
+        ISystemNotificationService systemNotificationService, IMessenger messenger)
     {
         _keyBindingService = keyBindingService;
         _soundStorageService = soundStorageService;
         _keyBindingViewModelFactory = keyBindingViewModelFactory;
         _systemNotificationService = systemNotificationService;
+        _messenger = messenger;
         LoadDataAsync();
     }
 
@@ -80,7 +82,7 @@ public partial class MainWindowViewModel : ViewModelBase
     /// Команда для добавления нового биндинга
     /// </summary>
     [RelayCommand]
-    private async Task AddKeyBindingCommand()
+    private async Task AddKeyBinding()
     {
         var newBindingModel = new KeyBinding
         {
@@ -95,7 +97,7 @@ public partial class MainWindowViewModel : ViewModelBase
     /// Команда для открытия меню управления звуками
     /// </summary>
     [RelayCommand]
-    private void ShowManageSoundViewCommand()
+    private void ShowManageSoundView()
     {
         throw new System.NotImplementedException();
     }
@@ -104,7 +106,7 @@ public partial class MainWindowViewModel : ViewModelBase
     /// Команда для сворачивания приложения
     /// </summary>
     [RelayCommand]
-    private void HideApplicationCommand()
+    private void HideApplication()
     {
         if (!_closeNotificationShown)
         {
@@ -112,6 +114,6 @@ public partial class MainWindowViewModel : ViewModelBase
             _closeNotificationShown = true;
         }
         
-        View?.HideWindow();
+        _messenger.Send(new HideWindowMessage());
     }
 }

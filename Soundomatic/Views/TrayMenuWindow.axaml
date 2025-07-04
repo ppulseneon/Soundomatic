@@ -1,7 +1,5 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="https://github.com/avaloniaui"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Soundomatic.ViewModels"
         x:Class="Soundomatic.Views.TrayMenuWindow"
         x:DataType="vm:TrayMenuWindowViewModel"
@@ -164,7 +162,7 @@
 
 			<!-- Close application-->
 			<Button Name="ExitButtonMenu"
-					Click="TrayMenuExitCick"
+					Click="TrayMenuExitClick"
 					Height="32"
 					Margin="2"
 					Padding="12,0"

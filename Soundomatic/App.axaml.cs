@@ -11,7 +11,6 @@ using NAudio.CoreAudioApi;
 using Avalonia.Controls;
 using System.Runtime.InteropServices;
 using Avalonia.Threading;
-using Avalonia.Platform;
 
 namespace Soundomatic;
 
@@ -22,10 +21,7 @@ public partial class App : Application
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<App> _logger;
-
-    // TODO: Удалить, когда будет реализован механизм изменения громкости приложения
-    private readonly MMDeviceEnumerator _deviceEnumerator;
-    private readonly MMDevice _device;
+    private const int TrayMenuOffset = 5;
 
     private TrayIcon? _trayIcon;
 
@@ -37,13 +33,16 @@ public partial class App : Application
 
 
     /// <summary>
-    /// DLL дл получения позиции нажатия левой кнопки мыши для Linux
+    /// DLL для получения позиции нажатия левой кнопки мыши для Linux
     /// </summary>
-    [System.Runtime.InteropServices.DllImport("libX11")]
-    private static extern System.IntPtr XOpenDisplay(System.IntPtr display);
+    [DllImport("libX11")]
+    private static extern IntPtr XOpenDisplay(IntPtr display);
 
-    [System.Runtime.InteropServices.DllImport("libX11")]
-    private static extern int XQueryPointer(System.IntPtr display, System.IntPtr w, out System.IntPtr root_return,
+    /// <summary>
+    /// DLL для получения позиции нажатия левой кнопки мыши для Linux
+    /// </summary>
+    [DllImport("libX11")]
+    private static extern int XQueryPointer(IntPtr display, IntPtr w, out IntPtr root_return,
         out System.IntPtr child_return, out int root_x_return, out int root_y_return,
         out int win_x_return, out int win_y_return, out uint mask_return);
 
@@ -53,36 +52,37 @@ public partial class App : Application
     /// </summary>
     private static (int X, int Y) GetCursorPositionX11()
     {
-        System.IntPtr display = XOpenDisplay(System.IntPtr.Zero);
-        if (display == System.IntPtr.Zero)
+        IntPtr display = XOpenDisplay(System.IntPtr.Zero);
+        if (display == IntPtr.Zero)
             return (100, 100);
 
-        System.IntPtr root, child;
-
-        int root_x, root_y, win_x, win_y;
+        IntPtr root, child;
         uint mask;
 
-        XQueryPointer(display, System.IntPtr.Zero, out root, out child, out root_x, out root_y, out win_x, out win_y, out mask);
+        int root_x, root_y, win_x, win_y;
+
+        XQueryPointer(display, IntPtr.Zero, out root, out child, out root_x, out root_y, out win_x, out win_y, out mask);
         return (root_x, root_y);
     }
 
 
     /// <summary>
-    /// DLL дл получения позиции нажатия левой кнопки мыши для MacOS
+    /// DLL для получения позиции нажатия левой кнопки мыши для MacOS
     /// </summary>
-    [System.Runtime.InteropServices.DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
-    private static extern System.IntPtr CGEventCreate(System.IntPtr source);
+    [DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
+    private static extern IntPtr CGEventCreate(IntPtr source);
 
-    [System.Runtime.InteropServices.DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
-    private static extern CGPoint CGEventGetLocation(System.IntPtr eventRef);
+    
+    [DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
+    private static extern CGPoint CGEventGetLocation(IntPtr eventRef);
 
 
     /// <summary>
     /// Получение позиции нажатия левой кнопки мыши для MacOS
     /// </summary>
-    private static (int X, int Y) GetCursorPositionMacOS()
+    private static (int X, int Y) GetCursorPositionMacOs()
     {
-        System.IntPtr eventRef = CGEventCreate(System.IntPtr.Zero);
+        var eventRef = CGEventCreate(IntPtr.Zero);
         var loc = CGEventGetLocation(eventRef);
 
         return ((int)loc.X, (int)loc.Y);
@@ -114,8 +114,6 @@ public partial class App : Application
     {
         _serviceProvider = serviceProvider;
         _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
-        _deviceEnumerator = new MMDeviceEnumerator();
-        _device = _deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
     }
 
     /// <summary>
@@ -186,20 +184,25 @@ public partial class App : Application
     /// </summary>
     private void TrayIconOnClicked(object? sender, EventArgs e)
     {
-        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifitime) return;
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime) return;
 
         Dispatcher.UIThread.Post(() =>
         {
-            // TODO: Передавать громкость самого приложения. Сейчас в меню передается громкость системы
-            var _currentProgramVolume = (int)(_device.AudioEndpointVolume.MasterVolumeLevelScalar * 100);
-
             _logger.LogInformation("Open tray menu");
-            var _trayMenuWindow = new TrayMenuWindow(_serviceProvider, _currentProgramVolume);
-            var _pointClickUser = GetCursorPosition();
+            
+            // todo: переделать звук под текущие настройки приложения
+            var trayMenuWindow = new TrayMenuWindow(_serviceProvider, 50);
+            var pointClickUser = GetCursorPosition();
 
-            _logger.LogInformation("Assigning a tray menu position");
-            _trayMenuWindow.Position = new PixelPoint(_pointClickUser.X - ((int)_trayMenuWindow.Width * 2), _pointClickUser.Y - ((int)_trayMenuWindow.Height * 2));
-            _trayMenuWindow.Show();
+            trayMenuWindow.Show();
+            var windowWidth = trayMenuWindow.Bounds.Width;
+            var windowHeight = trayMenuWindow.Bounds.Height;
+
+            var finalX = pointClickUser.X - (int)windowWidth - TrayMenuOffset;
+            var finalY = pointClickUser.Y - (int)windowHeight - TrayMenuOffset;
+
+            _logger.LogInformation("Assigning a tray menu position as {x} {y}", finalX, finalY);
+            trayMenuWindow.Position = new PixelPoint(finalX, finalY);
         });
     }
 
@@ -215,7 +218,7 @@ public partial class App : Application
         }
 
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            return GetCursorPositionMacOS();
+            return GetCursorPositionMacOs();
 
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             return GetCursorPositionX11();

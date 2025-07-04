@@ -1,20 +1,27 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using CommunityToolkit.Mvvm.Messaging;
+using Soundomatic.Messages;
 using Soundomatic.ViewModels;
-using Soundomatic.Views.Interfaces;
 
 namespace Soundomatic.Views;
 
 /// <summary>
 /// Основное окно приложения
 /// </summary>
-public partial class MainWindow : Window, IHideable
+public partial class MainWindow : Window
 {
-    public MainWindow(MainWindowViewModel viewModel)
+    public MainWindow(MainWindowViewModel viewModel, IMessenger messenger)
     {
         DataContext = viewModel;
         InitializeComponent();
+        
+        messenger.Register<HideWindowMessage>(this, (_, _) =>
+        {
+            HideWindow();
+        });
     }
 
     /// <summary>
