@@ -6,5 +6,5 @@ namespace Soundomatic.Services.Interfaces;
 
 public interface ISoundPlayer : IDisposable
 {
-    Task PlaySoundAsync(Sound sound);
+    Task PlayAsync(SoundPack pack);
 }

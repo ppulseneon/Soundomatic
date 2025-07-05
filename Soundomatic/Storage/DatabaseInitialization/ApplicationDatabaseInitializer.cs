@@ -7,7 +7,6 @@ using Avalonia.Platform;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SharpHook.Data;
-using SharpHook.Native;
 using Soundomatic.Models;
 using Soundomatic.Services.Interfaces;
 using Soundomatic.Storage.Context;

@@ -10,7 +10,7 @@ namespace Soundomatic;
 /// <summary>
 /// Класс для инициализации приложения
 /// </summary>
-sealed class Program
+internal sealed class Program
 {
     /// <summary>
     /// Точка входа в приложение. Инициализирует и запускает приложение
@@ -22,8 +22,8 @@ sealed class Program
         try
         {
             var serviceProvider = Builder.BuildServices();
-            Builder.InitializeApplicationCore(serviceProvider);
-            BuildAvaloniaApp(serviceProvider).StartWithClassicDesktopLifetime(args);
+            BuildAvaloniaApp(serviceProvider) 
+                .StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
         {
@@ -32,21 +32,21 @@ sealed class Program
     }
     
     /// <summary>
-    /// Создает и настраивает экземпляр приложения с сервисами
+    /// Создает и настраивает экземпляр приложения с сервисами для работы приложения.
     /// </summary>
     /// <param name="serviceProvider">Провайдер сервисов для внедрения зависимостей</param>
     /// <returns>Настроенный экземпляр AppBuilder</returns>
     private static AppBuilder BuildAvaloniaApp(IServiceProvider serviceProvider)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<App>>();
-        logger.LogInformation("Application service provider built. Configuring App.");
+        logger.LogInformation("Application service provider built. Configuring App for runtime.");
         
-        return AppBuilder.Configure(() => new App(serviceProvider))
+        return AppBuilder.Configure(() => new App(serviceProvider)) 
            .UsePlatformDetect()
            .WithInterFont()
            .LogToTrace();
     }
-    
+
     /// <summary>
     /// Обрабатывает исключения, возникающие во время запуска приложения.
     /// Логирует ошибку и выбрасывает асинхронное исключение для дальнейшей обработки.
@@ -54,10 +54,18 @@ sealed class Program
     /// <param name="ex">Исключение, которое произошло во время запуска.</param>
     private static void ProcessStartupException(Exception ex)
     {
-        var serviceProvider = Builder.BuildServices();
-        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        try
+        {
+            var serviceProvider = Builder.BuildServices(); 
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An unhandled exception occurred during application startup.");
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine($"Failed to log startup exception: {exception}");
+            Console.Error.WriteLine($"Original startup exception: {ex}");
+        }
         
-        logger.LogError(ex, "An unhandled exception occurred during application startup.");
         BaseException.ThrowAsync<StartupException>();
     }
 }

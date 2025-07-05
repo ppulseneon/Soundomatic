@@ -3,40 +3,222 @@
         xmlns:vm="using:Soundomatic.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="500"
         x:Class="Soundomatic.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/Soundomatic.ico"
-        Title="Soundomatic">
+        x:Name="RootWindow"
+        Title="Soundomatic"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        Width="540"
+        Height="500">
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*" Margin="10">
-        <TextBlock Text="Звуковые пакеты" 
-                   FontSize="24" 
-                   FontWeight="Bold" 
-                   Margin="0,0,0,10"/>
-        
-        <ListBox Grid.Row="1" 
-                 ItemsSource="{Binding SoundPacks}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Image Width="32" Height="32" 
-                               Source="{Binding IconData, Converter={StaticResource ByteArrayToImageConverter}}"
-                               IsVisible="{Binding IconData, Converter={StaticResource NotNullToBoolConverter}}"/>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" 
-                                     FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Sounds.Count, StringFormat='{}{0} звуков'}"
-                                     Foreground="Gray"/>
-                        </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </Grid>
+    <Border BorderThickness="4" BorderBrush="#2C1B3C"
+            CornerRadius="10" PointerPressed="MainBorder_PointerPressed">
 
+        <Grid Background="#FF1D1A20" RowDefinitions="Auto,Auto,Auto,*" PointerPressed="Content_PointerPressed">
+
+            <!-- Title Bar -->
+            <DockPanel Grid.Row="0" Height="50" Background="Transparent" PointerPressed="TitleBar_PointerPressed">
+
+                <!-- Logo -->
+                <TextBlock Text="SOUNDOMATIC"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource PageNameBrush}"
+                           VerticalAlignment="Center"
+                           Margin="16,8,0,0"
+                           DockPanel.Dock="Left" />
+
+                <!-- Control Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0">
+
+                    <!-- Button -->
+                    <Button Name="ManageSoundSetsButton"
+                            Classes="BaseButton"
+                            Command="{Binding ShowManageSoundViewCommand}">
+
+                        <!-- Button Icon -->
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Image Source="/Assets/Icons/Upload.png"
+                                   Width="22"
+                                   Height="22"
+                                   VerticalAlignment="Center" />
+
+                            <TextBlock Text="Управление звуками"
+                                       FontSize="14"
+                                       Foreground="#FFFFFF"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+
+                    </Button>
+
+                    <!-- Button -->
+                    <Button Name="MinimizeButton"
+                            Click="MinimizeButton_Click"
+                            Content="—"
+                            Margin="6,0,0,0"
+                            Width="28" Height="28"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
+                            VerticalAlignment="Center" />
+
+                    <!-- Button -->
+                    <Button Name="CloseButton"
+                            Command="{Binding HideApplicationCommand}"
+                            Content="✕"
+                            Width="28" Height="28"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
+                            VerticalAlignment="Center" />
+                </StackPanel>
+
+            </DockPanel>
+
+            <!-- Separator Line -->
+            <Rectangle Grid.Row="1" Height="2" Fill="#2C1B3C" Margin="0" />
+
+            <!-- Border -->
+            <Border Grid.Row="2" Classes="LinkButtonContainer">
+
+                <!-- Button -->
+                <Button Name="LinkButton" Classes="LinkButton" Command="{Binding AddKeyBindingCommand}">
+
+                    <!-- StackPanel -->
+                    <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center">
+                        <TextBlock Text="+"
+                                   FontSize="28"
+                                   Foreground="#FFFFFF"
+                                   VerticalAlignment="Center" />
+
+                        <TextBlock Text="Добавить клавишу"
+                                   FontSize="16"
+                                   Foreground="#FFFFFF"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                </Button>
+            </Border>
+
+            <!-- Main Content -->
+
+            <!-- ListBox -->
+            <ListBox Grid.Row="3"
+                     ItemsSource="{Binding KeyBindings}"
+                     Background="Transparent"
+                     BorderThickness="0">
+
+                <!-- Item -->
+                <ListBox.ItemTemplate>
+
+                    <DataTemplate>
+                        <Border Classes="BoundKeyItem" Padding="16, 8, 16, 8">
+
+                            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+
+                                <Panel Width="40" Height="40">
+
+                                    <Border Width="40" Height="40" CornerRadius="20" ClipToBounds="True"
+                                            IsVisible="{Binding Pack.IconData, Converter={StaticResource NotNullToBoolConverter}}">
+                                        <Border.Background>
+                                            <ImageBrush
+                                                Source="{Binding Pack.IconData, Converter={StaticResource ByteArrayToImageConverter}}"
+                                                Stretch="UniformToFill"
+                                                AlignmentX="Center" AlignmentY="Center" />
+                                        </Border.Background>
+                                    </Border>
+
+                                    <Border Width="40" Height="40" CornerRadius="20" Background="#6B7280"
+                                            ClipToBounds="True"
+                                            IsVisible="{Binding Pack.IconData, Converter={StaticResource NullToBoolConverter }}">
+                                        <TextBlock Text="A"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </Panel>
+
+                                <StackPanel VerticalAlignment="Center">
+
+                                    <!-- todo: сделать кликабельным для установки/смены буквы -->
+                                    <TextBlock Text="{Binding GetKeyCodeName}"
+                                               FontWeight="Bold"
+                                               Foreground="White" />
+
+                                    <!-- todo: маппить состояние -->
+                                    <TextBlock Text="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
+                                               Width="90"
+                                               FontWeight="Bold"
+                                               FontSize="10"
+                                               Foreground="#999999" />
+                                </StackPanel>
+
+                                <!-- todo: уменьшить высоту и переделать стиль выпадающего списка -->
+                                <ComboBox Width="150"
+                                          Height="30"
+                                          Padding="16,2"
+                                          FontSize="12"
+                                          VerticalAlignment="Center"
+                                          Margin="10,0,0,0"
+                                          CornerRadius="10"
+                                          BorderThickness="0"
+                                          Foreground="Gray"
+                                          FontWeight="Bold"
+                                          ItemsSource="{Binding AllAvailablePacks}"
+                                          SelectedItem="{Binding Pack, Mode=TwoWay}"
+                                          DisplayMemberBinding="{Binding Name}">
+                                </ComboBox>
+
+                                <Panel HorizontalAlignment="Stretch" />
+
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+                                    <!-- Button -->
+                                    <Button Name="PlaySoundButton"
+                                            Classes="BaseButton"
+                                            Command="{Binding PlayPackSoundCommand}"
+                                            Padding="7, 7, 7, 7">
+
+                                        <!-- Button Icon -->
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <Image Source="/Assets/Icons/Volume.png"
+                                                   Width="18"
+                                                   Height="18"
+                                                   VerticalAlignment="Center" />
+
+                                            <TextBlock Text="Прослушать"
+                                                       FontSize="12"
+                                                       Foreground="#FFFFFF"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+
+                                    </Button>
+
+                                    <Button Content=":"
+                                            FontSize="12"
+                                            Padding="10,5"
+                                            Background="#EF4444" Foreground="White"
+                                            BorderThickness="0" CornerRadius="4" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+        </Grid>
+    </Border>
 </Window>

@@ -2,6 +2,9 @@
 
 namespace Soundomatic.ViewModels;
 
-public class ViewModelBase : ObservableObject
+/// <summary>
+/// Базовый класс для всех классов ViewModel
+/// </summary>
+public partial class ViewModelBase : ObservableObject
 {
 }
