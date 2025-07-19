@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace Soundomatic.ViewModels
 {
     /// <summary>
-    /// ViewModel кастомного меню в трее для изменения громкости приложения через UI
+    /// ViewModel РєР°СЃС‚РѕРјРЅРѕРіРѕ РјРµРЅСЋ РІ С‚СЂРµРµ РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РіСЂРѕРјРєРѕСЃС‚Рё РїСЂРёР»РѕР¶РµРЅРёСЏ С‡РµСЂРµР· UI
     /// </summary>
     public partial class TrayMenuWindowViewModel : ObservableObject, INotifyPropertyChanged
     {
@@ -28,10 +28,10 @@ namespace Soundomatic.ViewModels
         protected new void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public string textSoundEnabled => IsSoundEnabled ? "Звуки включены" : "Звуки выключены";
+        public string textSoundEnabled => IsSoundEnabled ? "Г‡ГўГіГЄГЁ ГўГЄГ«ГѕГ·ГҐГ­Г»" : "Г‡ГўГіГЄГЁ ГўГ»ГЄГ«ГѕГ·ГҐГ­Г»";
 
         /// <summary>
-        /// Конструктор
+        /// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
         /// </summary>
         public TrayMenuWindowViewModel(IServiceProvider serviceProvider)
         {
@@ -54,7 +54,7 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Геттер для чтения статуса включен ли звук
+        /// Р§С‚РµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РІРєР»СЋС‡РµРЅ Р»Рё Р·РІСѓРє
         /// </summary>
         public bool isSoundEnabled
         {
@@ -62,7 +62,7 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Геттер и сеттер для чтения и изменения громкости приложения
+        /// Р§С‚РµРЅРёРµ Рё РёР·РјРµРЅРµРЅРёРµ РіСЂРѕРјРєРѕСЃС‚Рё РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
         public int AppSystemVolume
         {
@@ -83,7 +83,7 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Изменение состояния включенного/выключенного звука приложения
+        /// РР·РјРµРЅРµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РІРєР»СЋС‡РµРЅРЅРѕРіРѕ/РІС‹РєР»СЋС‡РµРЅРЅРѕРіРѕ Р·РІСѓРєР° РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
         public void ToggleSound()
         {
@@ -94,9 +94,9 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Обновление данных в настройках приложения
+        /// РћР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… РІ РЅР°СЃС‚СЂРѕР№РєР°С… РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
-        /// <param name="value">Включен ли звук приложения</param>
+        /// <param name="value">Р’РєР»СЋС‡РµРЅ Р»Рё Р·РІСѓРє РїСЂРёР»РѕР¶РµРЅРёСЏ</param>
         partial void OnIsSoundEnabledChanged(bool value)
         {
             _appSettings.IsSoundEnabled = value;
