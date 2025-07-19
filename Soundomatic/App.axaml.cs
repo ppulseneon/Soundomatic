@@ -7,7 +7,6 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Soundomatic.Views;
-using NAudio.CoreAudioApi;
 using Avalonia.Controls;
 using System.Runtime.InteropServices;
 using Avalonia.Threading;
@@ -190,16 +189,15 @@ public partial class App : Application
         {
             _logger.LogInformation("Open tray menu");
             
-            // todo: переделать звук под текущие настройки приложения
-            var trayMenuWindow = new TrayMenuWindow(_serviceProvider, 50);
+            var trayMenuWindow = new TrayMenuWindow(_serviceProvider);
             var pointClickUser = GetCursorPosition();
 
             trayMenuWindow.Show();
             var windowWidth = trayMenuWindow.Bounds.Width;
             var windowHeight = trayMenuWindow.Bounds.Height;
 
-            var finalX = pointClickUser.X - (int)windowWidth - TrayMenuOffset;
-            var finalY = pointClickUser.Y - (int)windowHeight - TrayMenuOffset;
+            var finalX = pointClickUser.X - ((int)trayMenuWindow.Width * 2);
+            var finalY = pointClickUser.Y - ((int)trayMenuWindow.Height * 2);
 
             _logger.LogInformation("Assigning a tray menu position as {x} {y}", finalX, finalY);
             trayMenuWindow.Position = new PixelPoint(finalX, finalY);

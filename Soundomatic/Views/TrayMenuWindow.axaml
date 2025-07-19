@@ -3,7 +3,7 @@
         xmlns:vm="clr-namespace:Soundomatic.ViewModels"
         x:Class="Soundomatic.Views.TrayMenuWindow"
         x:DataType="vm:TrayMenuWindowViewModel"
-        Width="210" Height="200"
+        Width="210" Height="240"
         WindowStartupLocation="Manual"
         ShowInTaskbar="False"
         CanResize="False"
@@ -49,6 +49,41 @@
 							   Foreground="White"
 							   VerticalAlignment="Center"
 							   FontWeight="Bold"/>
+				</StackPanel>
+			</Button>
+
+			
+			<!-- On/Off Application Volume -->
+			<Button Name="VolumeOnOffButtonMenu"
+					Click="VolumeOnOffClick"
+					Height="32"
+					Margin="2"
+					Padding="12,0"
+					CornerRadius="8"
+					Background="Transparent"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch">
+
+				<Button.Styles>
+					<Style Selector="Button:pointerover">
+						<Setter Property="RenderTransformOrigin"
+								Value="0.5,0.5" />
+					</Style>
+				</Button.Styles>
+
+				<StackPanel Orientation="Horizontal"
+							Spacing="6"
+							VerticalAlignment="Center">
+
+					<Image Name="ImageVolume"
+						   Width="15"
+						   Height="15"
+						   Source="{Binding isSoundEnabled, Converter={StaticResource SoundEnabledToIconConverter}}" />
+
+					<TextBlock Text="{Binding textSoundEnabled}"
+							   FontSize="12"
+							   Foreground="White"
+							   VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 
@@ -113,7 +148,7 @@
 				<StackPanel Width="60" />
 
 				<TextBlock Name="VolumePercentText"
-						   Text="{Binding SystemVolume}"
+						   Text="{Binding AppSystemVolume, Mode=TwoWay}"
 						   FontSize="11"
 						   Foreground="#ACABAB"
 						   VerticalAlignment="Center"
@@ -125,7 +160,7 @@
 			<Slider Name="VolumeSlider"
 					Minimum="0"
 					Maximum="100"
-					Value="{Binding SystemVolume, Mode=TwoWay}"
+					Value="{Binding AppSystemVolume, Mode=TwoWay}"
 					Height="35"
 					Margin="6,-6,6,0"
 					Background="#2B2B2B"
@@ -189,7 +224,7 @@
 						   Height="15"
 						   Source="/Assets/TrayIcon/Close.png" />
 					
-					<TextBlock Text="Закрыть"
+					<TextBlock Text="Закрыть приложение"
 							   FontSize="12"
 							   Foreground="White"
 							   VerticalAlignment="Center"

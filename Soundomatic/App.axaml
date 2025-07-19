@@ -19,6 +19,7 @@
             <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
             <converters:BindingStatusToStringConverter x:Key="StatusToStringConverter" />
+			<converters:SoundEnabledToIconConverter x:Key="SoundEnabledToIconConverter" />
         </ResourceDictionary>
     </Application.Resources>
     
