@@ -1,16 +1,19 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Soundomatic.Services;
 using Soundomatic.Settings;
 using Soundomatic.Storage;
+using Soundomatic.Views;
 using System;
 using System.ComponentModel;
+using Soundomatic.ViewModels;
 
 namespace Soundomatic.ViewModels
 {
     /// <summary>
-    /// ViewModel кастомного меню в трее для изменения громкости приложения через UI
+    /// ViewModel РєР°СЃС‚РѕРјРЅРѕРіРѕ РјРµРЅСЋ РІ С‚СЂРµРµ РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РіСЂРѕРјРєРѕСЃС‚Рё РїСЂРёР»РѕР¶РµРЅРёСЏ С‡РµСЂРµР· UI
     /// </summary>
     public partial class TrayMenuWindowViewModel : ObservableObject, INotifyPropertyChanged
     {
@@ -19,19 +22,19 @@ namespace Soundomatic.ViewModels
 
         private readonly FileSettingsStorage _settingsStorage;
         private readonly AppSettings _appSettings;
+        private readonly SystemSettingsViewModel _systemSettingsVM = ViewModelLocator.SystemSettingsVM;
         public new event PropertyChangedEventHandler? PropertyChanged;
 
         [ObservableProperty] private bool _isSoundEnabled;
-
         [ObservableProperty] private int _systemVolume;
 
         protected new void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public string textSoundEnabled => IsSoundEnabled ? "Звуки включены" : "Звуки выключены";
+        public string TextSoundEnabled => IsSoundEnabled ? "Р—РІСѓРєРё РІРєР»СЋС‡РµРЅС‹" : "Р—РІСѓРєРё РІС‹РєР»СЋС‡РµРЅС‹";
 
         /// <summary>
-        /// Конструктор
+        /// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
         /// </summary>
         public TrayMenuWindowViewModel(IServiceProvider serviceProvider)
         {
@@ -46,6 +49,14 @@ namespace Soundomatic.ViewModels
 
                 _systemVolume = _appSettings.Volume;
                 _isSoundEnabled = _appSettings.IsSoundEnabled;
+
+                _systemSettingsVM.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(AppSystemVolume))
+                    {
+                        OnPropertyChanged(nameof(AppSystemVolume));
+                    }
+                };
             }
             catch(Exception? ex)
             {
@@ -54,7 +65,7 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Геттер для чтения статуса включен ли звук
+        /// Р§С‚РµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РІРєР»СЋС‡РµРЅ Р»Рё Р·РІСѓРє
         /// </summary>
         public bool isSoundEnabled
         {
@@ -62,47 +73,41 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Геттер и сеттер для чтения и изменения громкости приложения
+        /// Р§С‚РµРЅРёРµ Рё РёР·РјРµРЅРµРЅРёРµ РіСЂРѕРјРєРѕСЃС‚Рё РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
         public int AppSystemVolume
         {
-            get => (int)SystemVolume;
+            get => _systemSettingsVM.AppSystemVolume;
             set
             {
-                _logger.LogInformation("A AppSystemVolume change in the window TrayMenuWindowViewModel has been started");
-
-                if (SystemVolume != value)
+                if (_systemSettingsVM.AppSystemVolume != value)
                 {
-                    SystemVolume = value;
-                    OnPropertyChanged(nameof(AppSystemVolume));
-
-                    _appSettings.Volume = value;
-                    _settingsStorage.Save(_appSettings);
+                    _systemSettingsVM.AppSystemVolume = value;
+                    OnPropertyChanged(nameof(_systemSettingsVM.AppSystemVolume));
                 }
             }
         }
 
         /// <summary>
-        /// Изменение состояния включенного/выключенного звука приложения
+        /// РР·РјРµРЅРµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РІРєР»СЋС‡РµРЅРЅРѕРіРѕ/РІС‹РєР»СЋС‡РµРЅРЅРѕРіРѕ Р·РІСѓРєР° РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
         public void ToggleSound()
         {
             _logger.LogInformation("A IsSoundEnabled change in the window TrayMenuWindowViewModel has been started");
-
             IsSoundEnabled = !IsSoundEnabled;
             OnPropertyChanged(nameof(isSoundEnabled));
         }
 
         /// <summary>
-        /// Обновление данных в настройках приложения
+        /// РћР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… РІ РЅР°СЃС‚СЂРѕР№РєР°С… РїСЂРёР»РѕР¶РµРЅРёСЏ
         /// </summary>
-        /// <param name="value">Включен ли звук приложения</param>
+        /// <param name="value">Р’РєР»СЋС‡РµРЅ Р»Рё Р·РІСѓРє РїСЂРёР»РѕР¶РµРЅРёСЏ</param>
         partial void OnIsSoundEnabledChanged(bool value)
         {
             _appSettings.IsSoundEnabled = value;
             _settingsStorage.Save(_appSettings);
 
-            OnPropertyChanged(nameof(textSoundEnabled));
+            OnPropertyChanged(nameof(TextSoundEnabled));
         }
     }
 } 

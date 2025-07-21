@@ -80,7 +80,7 @@
 						   Height="15"
 						   Source="{Binding isSoundEnabled, Converter={StaticResource SoundEnabledToIconConverter}}" />
 
-					<TextBlock Text="{Binding textSoundEnabled}"
+					<TextBlock Text="{Binding TextSoundEnabled}"
 							   FontSize="12"
 							   Foreground="White"
 							   VerticalAlignment="Center"/>
@@ -162,31 +162,7 @@
 					Maximum="100"
 					Value="{Binding AppSystemVolume, Mode=TwoWay}"
 					Height="35"
-					Margin="6,-6,6,0"
-					Background="#2B2B2B"
-					CornerRadius="4">
-
-				<Slider.Styles>
-					<Style Selector="Track">
-						<Setter Property="Height" 
-								Value="4"/>
-					</Style>
-					
-					<Style Selector="Slider /template/ Thumb">
-						<Setter Property="Background"
-								Value="Transparent"/>
-						
-						<Setter Property="Template">
-							<ControlTemplate>
-								<Border Width="8" 
-										Height="8" 
-										Background="#6B21A8" 
-										CornerRadius="4"/>
-							</ControlTemplate>
-						</Setter>
-					</Style>
-				</Slider.Styles>
-			</Slider>
+					Margin="6,-6,6,0"/>
 
 
 			<!-- Separator -->

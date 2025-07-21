@@ -1,9 +1,265 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Soundomatic.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Soundomatic.SystemSettingsWindow"
-        Title="SystemSettingsWindow">
-  Open Settings Window
+        mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="470"
+        x:Class="Soundomatic.Views.SystemSettingsWindow"
+        x:DataType="vm:SystemSettingsViewModel"
+        Icon="/Assets/Soundomatic.ico"
+        x:Name="RootWindow"
+        Title="Soundomatic"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        Width="540"
+        Height="500">
+
+	<Design.DataContext>
+		<vm:SystemSettingsViewModel />
+	</Design.DataContext>
+
+	<Border BorderThickness="4" BorderBrush="#2C1B3C"
+		CornerRadius="10" PointerPressed="MainBorderPointerPressed">
+
+		<Grid Background="#1D1A20" RowDefinitions="Auto,Auto,Auto,*" PointerPressed="ContentPointerPressed">
+
+			<!-- Title Bar -->
+			<DockPanel Grid.Row="0" Height="50" Background="Transparent" PointerPressed="TitleBarPointerPressed">
+
+				<!-- Title -->
+				<TextBlock Text="СИСТЕМНЫЕ НАСТРОЙКИ"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource PageNameBrush}"
+                           VerticalAlignment="Center"
+                           Margin="120,8,0,0"
+                           DockPanel.Dock="Left" />
+
+
+				<!-- Control Buttons  -->
+				<StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0">
+
+
+					<Button Name="MinimizeButton"
+                            Click="MinimizeButtonClick"
+                            Content="—"
+                            Margin="6,0,0,0"
+                            Width="28" Height="28"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
+                            VerticalAlignment="Center" />
+
+
+					<Button Name="CloseButton"
+                            Content="✕"
+							Click="HideWindow"
+                            Width="28" Height="28"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Transparent" BorderThickness="0" Foreground="#FFFFFF"
+                            VerticalAlignment="Center" />
+				</StackPanel>
+
+			</DockPanel>
+
+			
+			<!-- Separator Line -->
+			<Rectangle Grid.Row="1" Height="2" Fill="#2C1B3C" Margin="0" />
+
+			
+			<!-- Main Content -->
+			<StackPanel Grid.Row="2"
+						Margin="22,16,22,0"
+						Spacing="0">
+
+				
+				<!-- Application Volume Block -->
+				<TextBlock Text="Звук"
+						   FontWeight="SemiBold"
+						   FontSize="16"
+						   Foreground="#FFFFFF"/>
+
+				
+				<Border CornerRadius="12"
+						Padding="16"
+						Margin="0,10,0,0"
+						Background="{StaticResource BackgroundStyleSettings}">
+
+					
+					<!-- ToggleSwitch System Volume  -->
+					<StackPanel Margin="0,10,0,0">
+						<StackPanel Orientation="Horizontal"
+									VerticalAlignment="Center"
+									Spacing="12">
+
+							<TextBlock Text="Системные звуки"
+									   FontSize="14"
+									   Foreground="#FFF" />
+
+							<ToggleSwitch x:Name="SystemVolumeOffOn"
+										  IsChecked="{Binding StartSystemVolumeOffOn}"
+										  Margin="283,-7,16,0"
+										  Width="40"
+										  Checked="SystemVolumeOffOnChecked"
+										  Unchecked="SystemVolumeOffOnChecked"/>
+						</StackPanel>
+
+						
+						<!-- Sound Set Management Button -->
+						<Button Height="35" Width="460"
+								Background="{StaticResource BackgroundButtonStyleSettings}"
+								Foreground="#FFF"
+								CornerRadius="8"
+								HorizontalAlignment="Center"
+								Margin="0,5,0,10"
+								Padding="16,0" >
+
+							<StackPanel Orientation="Horizontal"
+										Spacing="8"
+										VerticalAlignment="Center" HorizontalAlignment="Center">
+								<Image Source="/Assets/Icons/FolderWithSounds.png"
+									   Height="20" Width="20" />
+
+								<TextBlock Text="Управление звуковыми наборами"
+										   FontWeight="SemiBold" FontSize="14"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<Button.Styles>
+								<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+									<Setter Property="Background"
+											Value="{StaticResource BackgroundButtonHoverStyleSettings}" />
+								</Style>
+
+								<Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+									<Setter Property="Background"
+											Value="{StaticResource BackgroundButtonHoverStyleSettings}" />
+								</Style>
+							</Button.Styles>
+						</Button>
+						
+
+						<!-- Volume Block -->
+						<StackPanel Margin="0,0,0,10">
+
+							<StackPanel Orientation="Horizontal"
+						            Spacing="4"
+						            VerticalAlignment="Center"
+						            Margin="0,8,0,0">
+
+								
+								<!-- Volume Text Block -->
+								<TextBlock Text="Общая громкость"
+										   FontSize="14"
+										   Foreground="White"
+										   VerticalAlignment="Center" />
+
+								<StackPanel Width="308" />
+
+								<TextBlock Name="VolumePercentText"
+										   Text="{Binding AppSystemVolume, Mode=TwoWay}"
+										   FontSize="12"
+										   Foreground="#ACABAB"
+										   VerticalAlignment="Center"
+										   HorizontalAlignment="Right" />
+							</StackPanel>
+
+							
+							<!-- Volume Slider Block -->
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+
+								<Slider x:Name="SystemVolumeSlider" Minimum="0" Maximum="100"
+										Value="{Binding AppSystemVolume, Mode=TwoWay}"
+									    Width="458" Height="35"
+										Margin="0,0,8,0"/>
+							</StackPanel>
+						</StackPanel>
+
+						<Rectangle Height="5"
+								   RadiusX="2"
+								   Fill="#1D1A20"
+								   RadiusY="2"
+								   HorizontalAlignment="Left" Margin="0,-10,0,0"
+							       Width="458" />
+
+						<Rectangle Height="5"
+								   RadiusX="2" RadiusY="2"
+								   Fill="#6B21A8"
+								   HorizontalAlignment="Left" Margin="0,-10,0,0"
+							       Width="{Binding Value, ElementName=SystemVolumeSlider, Converter={StaticResource SliderToRectangleWidthConverter}}" />
+					</StackPanel>
+				</Border>
+
+
+				<!-- Separator Line -->
+				<Rectangle Grid.Row="1" Height="2" Fill="#242224" Margin="0,22" />
+				
+
+				<!-- Application Start Block -->
+				<TextBlock Text="Запуск"
+						   Foreground="White"
+				           FontSize="16" FontWeight="SemiBold"/>
+
+				<Border CornerRadius="12"
+						Padding="20"
+					    Background="{StaticResource BackgroundStyleSettings}"
+					    Margin="0,10,0,0">
+
+					<!-- Auto Start ToggleSwitch -->
+					<StackPanel Spacing="8">
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+									Spacing="12">
+
+							<TextBlock Text="Автозапуск при старте системы"
+									   FontSize="14"
+							           Foreground="#FFF" />
+
+							<ToggleSwitch IsChecked="{Binding StartSystemAutoStart}"
+										  Margin="180,-8,0,0"
+						                  Width="40"
+										  Checked="SystemAutoStartChecked"
+										  Unchecked="SystemAutoStartChecked"/>
+						</StackPanel>
+
+						<TextBlock Text="Приложение будет запущено автоматически при включении компьютера"
+								   Foreground="#AAA" FontSize="10"
+					               Margin="0,-13,0,0"/>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+			
+
+			<!-- Save Button -->
+			<Button Grid.Row="3"
+					Content="Сохранить"
+					Height="35" Width="180"
+			        Margin="30,-5,22,0"
+			        Background="{StaticResource BackgroundButtonHoverStyleSettings}"
+			        Foreground="#FFF"
+			        FontSize="14" FontWeight="SemiBold"
+				    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			        CornerRadius="10"
+			        HorizontalAlignment="Right" 
+					Click="SaveClick">
+
+				<Button.Styles>
+					<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Background"
+								Value="{StaticResource BackgroundButtonStyleSettings}" />
+					</Style>
+
+					<Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Background"
+								Value="{StaticResource BackgroundButtonStyleSettings}" />
+					</Style>
+				</Button.Styles>
+			</Button>
+
+		</Grid>
+	</Border>
 </Window>
