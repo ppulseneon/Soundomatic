@@ -14,20 +14,14 @@ namespace Soundomatic.Services;
 public class SoundStorageService(ApplicationDbContext dbContext) : ISoundStorageService
 {
     /// <inheritdoc />
-    public async Task<IEnumerable<Sound>> GetAllSoundsAsync()
-    {
-        return await dbContext.Sounds
-            .Include(s => s.SoundPack)
-            .ToListAsync();
-    }
+    public async Task<IEnumerable<Sound>> GetAllSoundsAsync() => await dbContext.Sounds
+        .Include(s => s.SoundPack)
+        .ToListAsync();
     
     /// <inheritdoc />
-    public async Task<Sound?> GetSoundByIdAsync(int id)
-    {
-        return await dbContext.Sounds
-            .Include(s => s.SoundPack)
-            .FirstOrDefaultAsync(s => s.Id == id);
-    }
+    public async Task<Sound?> GetSoundByIdAsync(int id) => await dbContext.Sounds
+        .Include(s => s.SoundPack)
+        .FirstOrDefaultAsync(s => s.Id == id);
     
     /// <inheritdoc />
     public async Task<Sound> AddSoundAsync(Sound sound)
@@ -63,12 +57,9 @@ public class SoundStorageService(ApplicationDbContext dbContext) : ISoundStorage
     }
     
     /// <inheritdoc />
-    public async Task<IEnumerable<SoundPack>> GetAllSoundPacksAsync()
-    {
-        return await dbContext.SoundPacks
-            .Include(g => g.Sounds)
-            .ToListAsync();
-    }
+    public async Task<IEnumerable<SoundPack>> GetAllSoundPacksAsync() => await dbContext.SoundPacks
+        .Include(g => g.Sounds)
+        .ToListAsync();
     
     /// <inheritdoc />
     public async Task<SoundPack?> GetSoundPackByIdAsync(int id)

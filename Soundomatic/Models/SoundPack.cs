@@ -48,7 +48,7 @@ public class SoundPack: BaseEntity
     /// <summary>
     /// Создает и возвращает экземпляр стратегии воспроизведения
     /// </summary>
-    public IPlaybackStrategy CreateStrategy()
+    public IPlaybackStrategy? CreateStrategy()
     {
         if (Sounds.Count == 0)
         {

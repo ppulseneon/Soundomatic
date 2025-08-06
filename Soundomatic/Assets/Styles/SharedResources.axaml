@@ -1,0 +1,40 @@
+<!-- SharedResources.axaml -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <LinearGradientBrush x:Key="PageNameBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#C3A0FE" Offset="0.0" />
+        <GradientStop Color="#6B21A8" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#361E50" Offset="0.0" />
+        <GradientStop Color="#6B21A8" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonHoverBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#2A1145" Offset="0.0" />
+        <GradientStop Color="#501580" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonPressedBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#200D35" Offset="0.0" />
+        <GradientStop Color="#2E0C4A" Offset="1" />
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="BoundKeyItemBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#242224" Offset="0.0" />
+        <GradientStop Color="#2D1C3C" Offset="1" />
+    </LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="ButtonOffVolumeBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+		<GradientStop Color="#401b1f" Offset="0.0" />
+		<GradientStop Color="#611417" Offset="1" />
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="ButtonOnVolumeBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+		<GradientStop Color="#1f1d20" Offset="0.0" />
+		<GradientStop Color="#271a2f" Offset="1" />
+	</LinearGradientBrush>
+    
+</ResourceDictionary>

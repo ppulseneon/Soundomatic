@@ -1,0 +1,236 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Soundomatic.ViewModels"
+        x:Class="Soundomatic.Views.TrayMenuWindow"
+        x:DataType="vm:TrayMenuWindowViewModel"
+        Width="210" Height="240"
+        WindowStartupLocation="Manual"
+        ShowInTaskbar="False"
+        CanResize="False"
+        SystemDecorations="None"
+        Topmost="True"
+        Background="Transparent"
+        CornerRadius="12">
+
+	<Border Background="#141216" 
+			CornerRadius="15" 
+			Padding="0">
+		<StackPanel Margin="10,10,10,10" 
+					Spacing="2">
+
+			<!-- Open Soundomatic -->
+			<Button Name="OpenSoundomaticButtonMenu"
+					Click="TrayIconOpenClick"
+					Height="32"
+					Margin="2"
+					Padding="12,0"
+					CornerRadius="8"
+					Background="Transparent"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch">
+
+				<Button.Styles>
+					<Style Selector="Button:pointerover">
+						<Setter Property="Background"
+								Value="{StaticResource ButtonBrush}"/>
+						<Setter Property="RenderTransformOrigin"
+								Value="0.5,0.5" />
+					</Style>
+				</Button.Styles>
+
+				<StackPanel Orientation="Horizontal"
+							Spacing="6"
+							VerticalAlignment="Center">
+					<Image Width="15"
+						   Height="15"
+						   Source="/Assets/TrayIcon/OpenSoundomatic.png" />
+					<TextBlock Text="Открыть Soundomatic"
+							   FontSize="12"
+							   Foreground="White"
+							   VerticalAlignment="Center"
+							   FontWeight="Bold"/>
+				</StackPanel>
+			</Button>
+
+			
+			<!-- On/Off Application Volume -->
+			<Button Name="VolumeOnOffButtonMenu"
+					Click="VolumeOnOffClick"
+					Height="32"
+					Margin="2"
+					Padding="12,0"
+					CornerRadius="8"
+					Background="Transparent"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch">
+
+				<Button.Styles>
+					<Style Selector="Button:pointerover">
+						<Setter Property="RenderTransformOrigin"
+								Value="0.5,0.5" />
+					</Style>
+				</Button.Styles>
+
+				<StackPanel Orientation="Horizontal"
+							Spacing="6"
+							VerticalAlignment="Center">
+
+					<Image Name="ImageVolume"
+						   Width="15"
+						   Height="15"
+						   Source="{Binding IsSoundEnabled, Converter={StaticResource SoundEnabledToIconConverter}}" />
+
+					<TextBlock Text="{Binding TextSoundEnabled}"
+							   FontSize="12"
+							   Foreground="White"
+							   VerticalAlignment="Center"/>
+				</StackPanel>
+			</Button>
+
+			
+			<!-- Open Settings -->
+			<Button Name="OepnSettingsButtonMenu"
+					Click="TrayMenuSettingsClick"
+					Height="32"
+					Margin="2"
+					Padding="12,0"
+					CornerRadius="8"
+					Background="Transparent"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch">
+
+				<Button.Styles>
+					<Style Selector="Button:pointerover">
+						<Setter Property="Background"
+								Value="{StaticResource ButtonBrush}"/>
+						
+						<Setter Property="RenderTransformOrigin"
+								Value="0.5,0.5" />
+					</Style>
+				</Button.Styles>
+
+				<StackPanel Orientation="Horizontal"
+							Spacing="6"
+							VerticalAlignment="Center">
+					
+					<Image Width="15"
+						   Height="15"
+						   Source="/Assets/TrayIcon/Settings.png" />
+					
+					<TextBlock Text="Настройки"
+							   FontSize="12"
+							   Foreground="White"
+							   VerticalAlignment="Center"/>
+				</StackPanel>
+			</Button>
+
+			<!-- Separator -->
+			<Border Height="1"
+					Background="#2C1B3C"
+					Margin="6,5,6,5" />
+
+			<!-- Text volume -->
+			<StackPanel Orientation="Horizontal"
+						Spacing="4"
+						VerticalAlignment="Center"
+						Margin="15,2,18,0">
+
+
+				<Image Width="15"
+					   Height="15"
+					   Source="/Assets/TrayIcon/Volume.png" />
+
+				<TextBlock Text="Громкость"
+						   FontSize="12"
+						   Foreground="White"
+						   VerticalAlignment="Center" />
+
+				<StackPanel Width="60" />
+
+				<TextBlock Name="VolumePercentText"
+						   Text="{Binding AppSystemVolume, Mode=TwoWay}"
+						   FontSize="11"
+						   Foreground="#ACABAB"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Right" />
+			</StackPanel>
+
+
+			<!-- Slider volume -->
+			<Slider Name="VolumeSlider"
+					Minimum="0"
+					Maximum="100"
+					Value="{Binding AppSystemVolume, Mode=TwoWay}"
+					Height="35"
+					Margin="6,-6,6,0"
+					Background="#2B2B2B"
+					CornerRadius="4">
+
+				<Slider.Styles>
+					<Style Selector="Track">
+						<Setter Property="Height" 
+								Value="4"/>
+					</Style>
+					
+					<Style Selector="Slider /template/ Thumb">
+						<Setter Property="Background"
+								Value="Transparent"/>
+						
+						<Setter Property="Template">
+							<ControlTemplate>
+								<Border Width="8" 
+										Height="8" 
+										Background="#6B21A8" 
+										CornerRadius="4"/>
+							</ControlTemplate>
+						</Setter>
+					</Style>
+				</Slider.Styles>
+			</Slider>
+
+
+			<!-- Separator -->
+			<Border Height="1"
+					Background="#2C1B3C"
+					Margin="6,-2,6,5" />
+
+
+			<!-- Close application-->
+			<Button Name="ExitButtonMenu"
+					Click="TrayMenuExitClick"
+					Height="32"
+					Margin="2"
+					Padding="12,0"
+					CornerRadius="8"
+					Background="Transparent"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch">
+
+				<Button.Styles>
+					<Style Selector="Button:pointerover">
+						<Setter Property="Background"
+								Value="{StaticResource ButtonBrush}"/>
+						
+						<Setter Property="RenderTransformOrigin"
+								Value="0.5,0.5" />
+					</Style>
+				</Button.Styles>
+
+				<StackPanel Orientation="Horizontal"
+							Spacing="6"
+							VerticalAlignment="Center">
+
+					<Image Width="15"
+						   Height="15"
+						   Source="/Assets/TrayIcon/Close.png" />
+					
+					<TextBlock Text="Закрыть приложение"
+							   FontSize="12"
+							   Foreground="White"
+							   VerticalAlignment="Center"
+							   FontWeight="Bold"/>
+				</StackPanel>
+			</Button>
+		</StackPanel>
+	</Border>
+</Window>

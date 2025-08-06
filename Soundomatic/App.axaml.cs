@@ -6,8 +6,10 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Soundomatic.ViewModels;
 using Soundomatic.Views;
+using Avalonia.Controls;
+using Avalonia.Threading;
+using Soundomatic.Helpers;
 
 namespace Soundomatic;
 
@@ -18,7 +20,9 @@ public partial class App : Application
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<App> _logger;
-    
+
+    private TrayIcon? _trayIcon;
+
     /// <summary>
     /// Конструктор
     /// </summary>
@@ -28,7 +32,7 @@ public partial class App : Application
         _serviceProvider = serviceProvider;
         _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
     }
-    
+
     /// <summary>
     /// Инициализация приложения
     /// </summary>
@@ -38,7 +42,7 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
         _logger.LogInformation("Application resources initialized and XAML loaded");
     }
-    
+
     /// <summary>
     /// Метол для настройки главного окна, после инициализации фреймворка
     /// </summary>
@@ -48,6 +52,8 @@ public partial class App : Application
 
         try
         {
+            _logger.LogInformation("Initializing application core");
+            Builder.InitializeApplicationCore(_serviceProvider);
             _logger.LogInformation("Initializing database");
             Builder.InitializeDatabase(_serviceProvider);
             _logger.LogInformation("Database initialization complete");
@@ -55,17 +61,21 @@ public partial class App : Application
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 DisableAvaloniaDataAnnotationValidation();
-
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = _serviceProvider.GetService<MainWindowViewModel>(),
-                };
+                desktop.MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             }
+
+            _trayIcon = new TrayIcon
+            {
+                Icon = new WindowIcon("Assets/Soundomatic.ico"),
+                ToolTipText = "Soundomatic"
+            };
+
+            _trayIcon.Clicked += TrayIconOnClicked;
         }
         catch (Exception? ex)
         {
             _logger.LogCritical(ex, "A critical error occurred during framework initialization");
-            ShutdownApplication(1); 
+            ShutdownApplication(1);
             return;
         }
 
@@ -85,50 +95,40 @@ public partial class App : Application
             BindingPlugins.DataValidators.Remove(plugin);
         }
     }
-    
+
     /// <summary>
-    /// Открывает приложение по нажатию на иконку в трее
+    /// Открывает кастомное меню трея
     /// </summary>
     private void TrayIconOnClicked(object? sender, EventArgs e)
     {
-        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifitime) return;
-        var mainWindow = desktopLifitime.MainWindow;
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime) return;
 
-        if (mainWindow == null || mainWindow.IsVisible) return;
-        mainWindow.Show();
-        mainWindow.Activate();
+        Dispatcher.UIThread.Post(() =>
+        {
+            _logger.LogInformation("Open tray menu");
+            
+            var trayMenuWindow = new TrayMenuWindow(_serviceProvider);
+            var cursorPixelPoint = TrayPositioningHelper.GetCursorPosition();
+
+            trayMenuWindow.Show();
+            
+            trayMenuWindow.InvalidateMeasure();
+            trayMenuWindow.UpdateLayout();
+            
+            var windowSize = new Size(trayMenuWindow.Bounds.Width, trayMenuWindow.Bounds.Height);
+            
+            var optimalPosition = TrayPositioningHelper.CalculateOptimalPosition(
+                cursorPixelPoint, 
+                windowSize, 
+                _logger);
+
+            _logger.LogInformation("Оптимальная позиция меню трея: {x} {y}", optimalPosition.X, optimalPosition.Y);
+            trayMenuWindow.Position = optimalPosition;
+        });
     }
 
-    /// <summary>
-    /// Открывает приложение по нажатию на пункт в меню в трее
-    /// </summary>
-    private void OpenApplicationOnClick(object? sender, EventArgs e)
-    {
-        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifitime) return;
-        var mainWindow = desktopLifitime.MainWindow;
 
-        if (mainWindow == null || mainWindow.IsVisible) return;
-        mainWindow.Show();
-        mainWindow.Activate();
-    }
 
-    /// <summary>
-    /// Открывает окно настроек по нажатию на пункт меню в трее
-    /// </summary>
-    private void OpenSettingsOnClock(object? sender, EventArgs e)
-    {
-        _logger.LogInformation("Tray menu 'Open Settings' clicked. Functionality not yet implemented.");
-    }
-
-    /// <summary>
-    /// Полностью закрывает приложение и снимает задачу с процесса
-    /// </summary>
-    private void CloseApplicationOnClick(object? sender, EventArgs e)
-    {
-        _logger.LogInformation("Tray menu 'Close Application' clicked. Exiting application.");
-        ShutdownApplication(0);
-    }
-    
     /// <summary>
     /// Выполняет попытку корректного или принудительного завершения приложения.
     /// </summary>
