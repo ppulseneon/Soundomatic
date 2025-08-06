@@ -47,25 +47,21 @@ public static class ApplicationDatabaseInitializer
 
         if (existingBindings.Any()) return;
         
-        var packs = soundStorageService.GetAllSoundPacksAsync().GetAwaiter().GetResult();
-        var packsList = packs.ToList();
+        var packs = soundStorageService.GetAllSoundPacksAsync().GetAwaiter().GetResult().ToList();
+        var maxIterations = Math.Min(packs.Count, 12);
 
-        var maxIterations = Math.Min(packsList.Count, 12);
-
-        for (var i = 1; i <= maxIterations; i++)
-        {
-            var keyCode = (KeyCode)((int)KeyCode.VcF1 + (i - 1));
-
-            var pack = i <= packsList.Count ? packsList[i - 1] : null;
-
-            var keyBinding = new KeyBinding
+        var keyBindings = Enumerable.Range(1, maxIterations)
+            .Select(i => new KeyBinding
             {
-                Key = keyCode,
-                PackId = pack.Id,
+                Key = (KeyCode)((int)KeyCode.VcF1 + (i - 1)),
+                PackId = packs[i - 1].Id,
                 CreatedAt = DateTime.UtcNow
-            };
+            })
+            .ToList();
 
-            keyBindingService.AddKeyBindingAsync(keyBinding).GetAwaiter().GetResult();
+        foreach (var binding in keyBindings)
+        {
+            keyBindingService.AddKeyBindingAsync(binding).GetAwaiter().GetResult();
         }
     }
 
@@ -99,12 +95,13 @@ public static class ApplicationDatabaseInitializer
             .GroupBy(path => path.Split('/')[5])
             .ToList();
 
+        var existingPacks = soundStorageService.GetAllSoundPacksAsync().GetAwaiter().GetResult();
+        var existingSounds = soundStorageService.GetAllSoundsAsync().GetAwaiter().GetResult();
+
         foreach (var packGroup in packGroups)
         {
             var packName = packGroup.Key;
-
-            var packs = soundStorageService.GetAllSoundPacksAsync().GetAwaiter().GetResult();
-            var pack = packs.FirstOrDefault(g => g.Name == packName);
+            var pack = existingPacks.FirstOrDefault(g => g.Name == packName);
 
             if (pack == null)
             {
@@ -163,13 +160,13 @@ public static class ApplicationDatabaseInitializer
             foreach (var soundPath in soundFiles)
             {
                 var fileName = Path.GetFileName(soundPath);
-                var fileExtension = Path.GetExtension(soundPath).ToLowerInvariant();
 
-                var existingSounds = soundStorageService.GetAllSoundsAsync().GetAwaiter().GetResult();
                 if (existingSounds.Any(s => s.FileName == fileName))
                 {
                     continue;
                 }
+
+                var fileExtension = Path.GetExtension(soundPath).ToLowerInvariant();
 
                 using var soundStream = AssetLoader.Open(new Uri(soundPath));
                 using var soundMemoryStream = new MemoryStream();
@@ -188,11 +185,7 @@ public static class ApplicationDatabaseInitializer
                 sound = soundStorageService.AddSoundAsync(sound).GetAwaiter().GetResult();
                 
                 var fileData = soundMemoryStream.ToArray();
-
-                Task.Run(async () =>
-                {
-                    await soundFileService.SaveSoundFileAsync(sound, fileData);
-                });
+                soundFileService.SaveSoundFileAsync(sound, fileData).GetAwaiter().GetResult();
             }
         }
     }

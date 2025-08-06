@@ -1,4 +1,3 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -62,9 +61,9 @@ public partial class MainWindow : Window
     /// </summary>
     private void MinimizeButton_Click(object? sender, RoutedEventArgs e)
     {
-        if (VisualRoot is Window window)
+        if (VisualRoot is Window)
         {
-            window.WindowState = WindowState.Minimized;
+            HideWindow();
         }
     }
 

@@ -99,7 +99,7 @@ public partial class KeyBindingViewModel : ObservableObject
     /// Команда для прослушивания пака звуков
     /// </summary>
     [RelayCommand]
-    private async Task PlayPackSoundCommand()
+    public async Task PlayPackSoundCommand()
     {
         if (Pack != null)
         {

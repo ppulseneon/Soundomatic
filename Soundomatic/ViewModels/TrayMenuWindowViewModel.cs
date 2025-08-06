@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Soundomatic.Services;
 using Soundomatic.Settings;
 using Soundomatic.Storage;
 using System;
@@ -25,10 +24,10 @@ namespace Soundomatic.ViewModels
 
         [ObservableProperty] private int _systemVolume;
 
-        protected new void OnPropertyChanged(string propertyName)
+        private new void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public string textSoundEnabled => IsSoundEnabled ? "Çâóêè âêëþ÷åíû" : "Çâóêè âûêëþ÷åíû";
+        public string TextSoundEnabled => IsSoundEnabled ? "Звуки включены" : "Звуки выключены";
 
         /// <summary>
         /// Конструктор
@@ -54,31 +53,22 @@ namespace Soundomatic.ViewModels
         }
 
         /// <summary>
-        /// Чтение статуса включен ли звук
-        /// </summary>
-        public bool isSoundEnabled
-        {
-            get => IsSoundEnabled;
-        }
-
-        /// <summary>
         /// Чтение и изменение громкости приложения
         /// </summary>
         public int AppSystemVolume
         {
-            get => (int)SystemVolume;
+            get => SystemVolume;
             set
             {
                 _logger.LogInformation("A AppSystemVolume change in the window TrayMenuWindowViewModel has been started");
 
-                if (SystemVolume != value)
-                {
-                    SystemVolume = value;
-                    OnPropertyChanged(nameof(AppSystemVolume));
+                if (SystemVolume == value) return;
+                
+                SystemVolume = value;
+                OnPropertyChanged(nameof(AppSystemVolume));
 
-                    _appSettings.Volume = value;
-                    _settingsStorage.Save(_appSettings);
-                }
+                _appSettings.Volume = value;
+                _settingsStorage.Save(_appSettings);
             }
         }
 
@@ -90,7 +80,7 @@ namespace Soundomatic.ViewModels
             _logger.LogInformation("A IsSoundEnabled change in the window TrayMenuWindowViewModel has been started");
 
             IsSoundEnabled = !IsSoundEnabled;
-            OnPropertyChanged(nameof(isSoundEnabled));
+            OnPropertyChanged(nameof(IsSoundEnabled));
         }
 
         /// <summary>
@@ -102,7 +92,7 @@ namespace Soundomatic.ViewModels
             _appSettings.IsSoundEnabled = value;
             _settingsStorage.Save(_appSettings);
 
-            OnPropertyChanged(nameof(textSoundEnabled));
+            OnPropertyChanged(nameof(TextSoundEnabled));
         }
     }
 } 

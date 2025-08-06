@@ -78,9 +78,9 @@
 					<Image Name="ImageVolume"
 						   Width="15"
 						   Height="15"
-						   Source="{Binding isSoundEnabled, Converter={StaticResource SoundEnabledToIconConverter}}" />
+						   Source="{Binding IsSoundEnabled, Converter={StaticResource SoundEnabledToIconConverter}}" />
 
-					<TextBlock Text="{Binding textSoundEnabled}"
+					<TextBlock Text="{Binding TextSoundEnabled}"
 							   FontSize="12"
 							   Foreground="White"
 							   VerticalAlignment="Center"/>
